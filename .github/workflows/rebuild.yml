@@ -1,0 +1,62 @@
+name: Rebuild the atlas
+
+# Runs on the 1st of each month, and whenever you press Run workflow.
+# Press it after publishing a batch of poets if you don't want to wait.
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rebuild atlas.json from the CMS
+        id: build
+        env:
+          WEBFLOW_TOKEN: ${{ secrets.WEBFLOW_TOKEN }}
+        run: |
+          set -o pipefail
+          python3 build_atlas.py 2>&1 | tee /tmp/build.log
+        continue-on-error: true
+
+      - name: Write the run summary
+        if: always()
+        run: |
+          {
+            echo "### Atlas rebuild"
+            echo ""
+            echo '```'
+            cat /tmp/build.log 2>/dev/null || echo "the build produced no output"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit whatever moved
+        if: always()
+        run: |
+          git config user.name  "onlypoems-atlas"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add atlas.json unplaced.md
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+          else
+            git commit -m "Rebuild the atlas from the CMS"
+            git push
+          fi
+
+      # Fails last, so the report is committed either way. A failure means
+      # somebody has a location on file that geo.py has no coordinates
+      # for — see unplaced.md.
+      - name: Surface a build failure
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "The rebuild could not place everyone — see unplaced.md" >&2
+          exit 1
