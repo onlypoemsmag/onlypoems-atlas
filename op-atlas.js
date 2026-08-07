@@ -27,10 +27,10 @@
   /* ------------------------------------------------ styles */
   var CSS = [
     "#" + ROOT_ID + "{border:0!important;min-height:0!important;display:block!important;padding:0}",
-    ".opa-bar{display:flex;gap:4px;margin:0 0 14px}",
+    ".opa-bar{display:flex;gap:4px;margin:0 0 14px;justify-content:center}",
     ".opa-bar button{appearance:none;background:#fde7ff;border:1px solid transparent;color:#4c274a;",
-      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:10.5px;letter-spacing:.13em;",
-      "text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:.18s;border-radius:11px}",
+      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.11em;",
+      "text-transform:uppercase;padding:9px 15px;cursor:pointer;transition:.18s;border-radius:11px}",
     ".opa-bar button:hover{background:#ffa8fa}",
     ".opa-bar button[aria-pressed=true]{background:#cc69c7;color:#fefcff}",
     ".opa-stage{position:relative;border:1px solid rgba(5,33,78,.14);border-radius:11px;overflow:hidden;background:#fefcff}",
@@ -41,14 +41,14 @@
       "color:#4c274a;border-radius:11px;cursor:pointer;font-family:brother-1816,'Brother 1816',sans-serif;",
       "font-size:14px;line-height:1;transition:.16s;padding:0}",
     ".opa-zoom button:hover{background:#ffa8fa;border-color:#ffa8fa}",
-    ".opa-zoom button.opa-wide{width:auto;padding:0 10px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase}",
+    ".opa-zoom button.opa-wide{width:auto;padding:0 11px;font-size:11px;letter-spacing:.1em;text-transform:uppercase}",
     ".opa-legend{position:absolute;right:14px;bottom:12px;display:flex;gap:16px;align-items:center;",
-      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;letter-spacing:.14em;",
-      "text-transform:uppercase;color:rgba(5,33,78,.6);pointer-events:none}",
+      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
+      "color:rgba(5,33,78,.68);pointer-events:none}",
     ".opa-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#cc69c7;margin-right:6px;vertical-align:middle}",
     ".opa-legend i.opa-ring{background:transparent;border:1px solid #cc69c7}",
     ".opa-hint{position:absolute;left:14px;bottom:12px;font-family:brother-1816,'Brother 1816',sans-serif;",
-      "font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(5,33,78,.3);pointer-events:none}",
+      "font-size:11px;letter-spacing:.02em;color:rgba(5,33,78,.62);pointer-events:none}",
     ".opa-card{position:absolute;left:14px;top:14px;width:330px;max-width:calc(100% - 28px);",
       "background:rgba(254,252,255,.94);backdrop-filter:blur(8px);border:1px solid rgba(5,33,78,.14);",
       "border-radius:11px;padding:15px 17px 17px;opacity:0;transform:translateY(-4px);",
@@ -57,16 +57,16 @@
     ".opa-card.opa-pin{pointer-events:auto}",
     ".opa-card.opa-right{left:auto;right:14px;top:52px}",
     ".opa-card h3{font-family:brother-1816,'Brother 1816',sans-serif;margin:0;font-weight:400;font-size:18px;padding-right:20px}",
-    ".opa-meta{font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;letter-spacing:.16em;",
-      "text-transform:uppercase;color:rgba(5,33,78,.6);margin-top:7px}",
+    ".opa-meta{font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
+      "text-transform:uppercase;color:rgba(5,33,78,.68);margin-top:7px}",
     ".opa-card ul{list-style:none;margin:12px 0 0;padding:0;max-height:200px;overflow:auto}",
     ".opa-card li{padding:6px 0;border-top:1px solid rgba(5,33,78,.14);font-size:15px;line-height:1.35}",
     ".opa-card li:first-child{border-top:0}",
-    ".opa-card li i{display:block;font-size:13px;color:rgba(5,33,78,.6);font-style:italic;line-height:1.42;margin-top:3px}",
+    ".opa-card li i{display:block;font-size:13.5px;color:rgba(5,33,78,.68);font-style:italic;line-height:1.45;margin-top:3px}",
     ".opa-who{color:#05214e;text-decoration:none;border-bottom:1px solid transparent;transition:.15s}",
     ".opa-card.opa-pin .opa-who:hover{color:#cc69c7;border-bottom-color:#cc69c7}",
     ".opa-x{position:absolute;right:10px;top:9px;width:20px;height:20px;border:0;background:none;",
-      "color:rgba(5,33,78,.6);cursor:pointer;font-size:15px;line-height:1;display:none;padding:0}",
+      "color:rgba(5,33,78,.68);cursor:pointer;font-size:16px;line-height:1;display:none;padding:0}",
     ".opa-card.opa-pin .opa-x{display:block}",
     "@media (max-width:720px){.opa-card{position:static;width:auto;max-width:none;opacity:1;transform:none;",
       "pointer-events:auto;border:0;border-top:1px solid rgba(5,33,78,.14);border-radius:0;backdrop-filter:none}",
@@ -82,7 +82,7 @@
     ".opa-ct[aria-expanded=true]{background:#cc69c7;color:#fefcff}",
     ".opa-ct[aria-expanded=true] .op-atlas-lab{color:#fefcff;opacity:.8}",
     ".opa-caret{font-style:normal;font-family:brother-1816,'Brother 1816',sans-serif;",
-      "font-size:9px;opacity:.55;margin-left:6px}",
+      "font-size:10px;opacity:.7;margin-left:6px}",
     ".opa-panel{display:none;border-top:1px solid rgba(5,33,78,.14);",
       "border-bottom:1px solid rgba(5,33,78,.14);padding:22px 0 24px;margin:0 0 6px}",
     ".opa-panel.opa-on{display:block}",
@@ -92,16 +92,16 @@
       "width:100%;text-decoration:none;transition:color .15s}",
     ".opa-pitem:hover{color:#cc69c7}",
     ".opa-pitem u{text-decoration:none;font-family:brother-1816,'Brother 1816',sans-serif;",
-      "font-size:11px;color:rgba(5,33,78,.6);margin-left:6px}",
+      "font-size:11.5px;color:rgba(5,33,78,.68);margin-left:6px}",
     ".opa-pgroup{break-inside:avoid;margin:0 0 18px}",
-    ".opa-pgroup h5{font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;",
-      "letter-spacing:.19em;text-transform:uppercase;color:rgba(5,33,78,.6);margin:0 0 6px;font-weight:400}",
+    ".opa-pgroup h5{font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;",
+      "letter-spacing:.14em;text-transform:uppercase;color:rgba(5,33,78,.68);margin:0 0 8px;font-weight:400}",
     ".opa-pgroup h5 span{opacity:.55;margin-left:4px}",
-    ".opa-phint{font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;letter-spacing:.14em;",
-      "text-transform:uppercase;color:rgba(5,33,78,.3);margin:0 0 14px}",
+    ".opa-phint{font-family:brother-1816,'Brother 1816',sans-serif;font-size:11.5px;letter-spacing:.02em;",
+      "color:rgba(5,33,78,.62);margin:0 0 16px}",
     ".opa-seemore{appearance:none;border:0;background:none;padding:5px 0 0;cursor:pointer;display:block;",
-      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;letter-spacing:.14em;",
-      "text-transform:uppercase;color:#cc69c7;text-align:left}",
+      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
+      "text-transform:uppercase;color:#b03fa9;text-align:left}",
     ".opa-seemore:hover{opacity:.7}",
     /* the written-out index stays in the page for search engines and screen
        readers; the panels above are the sighted way in */
@@ -129,8 +129,8 @@
         '<button type="button" class="opa-reset opa-wide" title="Reset the view">Reset</button>' +
       '</div>' +
       '<div class="opa-card"></div>' +
-      '<div class="opa-legend"><span><i></i>City</span><span><i class="opa-ring"></i>State or country</span><span>Size = people</span></div>' +
-      '<div class="opa-hint">Pinch to zoom &middot; drag to turn</div>' +
+      '<div class="opa-legend"><span>Bigger dot, more poets</span></div>' +
+      '<div class="opa-hint">Pinch to zoom, drag to turn</div>' +
     '</div>';
 
   var bar    = root.querySelector(".opa-bar"),
@@ -141,9 +141,26 @@
       ctx    = cv.getContext("2d");
 
   var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var PAL = { landFill:"rgba(206,220,243,.92)", landLine:"rgba(1,83,219,.55)",
-              sphere:"rgba(1,83,219,.09)", rim:"rgba(1,83,219,.32)",
-              dot:"204,105,199", hot:"76,39,74", sep:"254,252,255" };
+  /* "fill" draws the flat map's landmasses solid; "outline" leaves them open,
+     matching the globe. The globe is always outline — half of it is facing
+     away, and closing shapes along the horizon is the expensive part. */
+  var LAND_STYLE = root.getAttribute("data-land") || "fill";
+  /* Dark mode used to be a CSS brightness filter over the whole canvas, which
+     lifted the antialiased edges along with everything else and left the dots
+     looking soft. Now that land is drawn rather than sampled, the map can just
+     be given its own colours. */
+  var DARK = !!(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+  var PAL = DARK
+    ? { landFill:"rgba(44,66,116,.55)", landLine:"rgba(104,158,245,.72)",
+        sphere:"rgba(80,140,255,.10)", rim:"rgba(104,158,245,.34)",
+        dot:"226,128,220", hot:"255,205,250", sep:"13,19,38" }
+    : { landFill:"rgba(206,220,243,.92)", landLine:"rgba(1,83,219,.55)",
+        sphere:"rgba(1,83,219,.09)", rim:"rgba(1,83,219,.32)",
+        dot:"204,105,199", hot:"76,39,74", sep:"254,252,255" };
+  if (window.matchMedia){
+    var mq = matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", function(){ location.reload(); });
+  }
 
   var state = { view:"globe", hover:null, sel:null, rot:-20, tilt:12,
                 spin:true, z:1, px:0, py:0, gz:1 };
@@ -193,43 +210,167 @@
              g.cy - g.r*(Math.cos(p0)*Math.sin(p) - Math.sin(p0)*Math.cos(p)*Math.cos(l)), cosc ];
   }
 
-  /* ------------------------------------------------ land raster, for globe dots */
-  var RW = 1400, RH = 700, MASK = null;
-  function buildMask(){
-    var c = document.createElement("canvas"); c.width=RW; c.height=RH;
-    var g = c.getContext("2d"); g.fillStyle="#fff";
-    LAND.forEach(function(ring){
-      g.beginPath();
-      ring.forEach(function(pt,i){
-        var x=(pt[0]+180)/360*RW, y=(90-pt[1])/180*RH;
-        if (i) g.lineTo(x,y); else g.moveTo(x,y);
-      });
-      g.closePath(); g.fill();
-    });
-    var d = g.getImageData(0,0,RW,RH).data;
-    MASK = new Uint8Array(RW*RH);
-    for (var i=0;i<RW*RH;i++) MASK[i] = d[i*4] > 90 ? 1 : 0;
+  /* ------------------------------------------------ coastlines on the sphere
+     The globe used to sample land into a grid of dots. Contributors are dots
+     too, so the eye had to sort one kind from the other. Now it draws the same
+     coastlines the flat map does, and the only dots on it are people.
+
+     Half the world faces away at any moment, so every outline has to be cut at
+     the horizon — a point is in front when cos(c) > 0. Filling is the harder
+     half: a landmass running off the edge of the disc must be closed along the
+     limb itself or the fill leaks into the ocean.
+
+     This runs sixty times a second while the globe turns, so the per-point
+     trigonometry that never changes is worked out once, at load. */
+  var RINGS = null;                      // per ring: lon, sin/cos lat, bounding cap
+  function prepareRings(){
+    RINGS = [];
+    for (var k = 0; k < LAND.length; k++){
+      var ring = LAND[k], n = ring.length;
+      var lon = new Float64Array(n), sla = new Float64Array(n), cla = new Float64Array(n);
+      var seam = new Uint8Array(n);
+      var mx = 0, my = 0, mz = 0, i, la;
+      for (i = 0; i < n; i++){
+        lon[i] = rad(ring[i][0]);
+        la = rad(ring[i][1]);
+        sla[i] = Math.sin(la); cla[i] = Math.cos(la);
+        seam[i] = Math.abs(Math.abs(ring[i][0]) - 180) < 0.01 ? 1 : 0;
+        mx += cla[i]*Math.cos(lon[i]); my += cla[i]*Math.sin(lon[i]); mz += sla[i];
+      }
+      var len = Math.sqrt(mx*mx + my*my + mz*mz) || 1;
+      mx /= len; my /= len; mz /= len;
+      var worst = 1;                     // smallest dot product = widest angle
+      for (i = 0; i < n; i++){
+        var d = cla[i]*Math.cos(lon[i])*mx + cla[i]*Math.sin(lon[i])*my + sla[i]*mz;
+        if (d < worst) worst = d;
+      }
+      RINGS.push({ lon:lon, sla:sla, cla:cla, seam:seam, n:n,
+                   cx:mx, cy:my, cz:mz, cap:Math.acos(Math.max(-1, Math.min(1, worst))) });
+    }
   }
-  function isLand(lon,lat){
-    var x = ((lon+180)/360*RW)|0, y = ((90-lat)/180*RH)|0;
-    if (x<0||y<0||x>=RW||y>=RH) return false;
-    return MASK[y*RW+x] === 1;
+
+  /* scratch, reused every frame so nothing is allocated in the draw loop */
+  var PX = new Float64Array(1), PY = new Float64Array(1), PV = new Uint8Array(1);
+  function ensureScratch(n){
+    if (PX.length < n){ PX = new Float64Array(n); PY = new Float64Array(n); PV = new Uint8Array(n); }
   }
-  var sCache = null;
-  function sphereDots(){
-    var d = 2.4/Math.sqrt(state.gz);
-    if (sCache && sCache.d === d) return sCache.pts;
-    var pts = [], lat, n, i, lon;
-    for (lat = -84; lat <= 84.001; lat += d){
-      n = Math.max(1, Math.round(360*Math.cos(rad(lat))/d));
-      for (i=0;i<n;i++){
-        lon = -180 + i*360/n;
-        if (isLand(lon,lat)) pts.push([lon,lat]);
+
+  function project(ring, g, sp0, cp0, rotR){
+    ensureScratch(ring.n);
+    var i, l, cosc, cl;
+    for (i = 0; i < ring.n; i++){
+      l = ring.lon[i] - rotR;
+      cl = Math.cos(l);
+      cosc = sp0*ring.sla[i] + cp0*ring.cla[i]*cl;
+      PV[i] = cosc > 0 ? 1 : 0;
+      PX[i] = g.cx + g.r*ring.cla[i]*Math.sin(l);
+      PY[i] = g.cy - g.r*(cp0*ring.sla[i] - sp0*ring.cla[i]*cl);
+    }
+  }
+  /* bisect along the segment for the point that sits exactly on the horizon */
+  function limbAt(ring, a, b, g, sp0, cp0, rotR){
+    var lo = 0, hi = 1, m, i, lon, sla, cla, l, cosc;
+    var lonA = ring.lon[a], lonB = ring.lon[b];
+    var slaA = ring.sla[a], slaB = ring.sla[b], claA = ring.cla[a], claB = ring.cla[b];
+    for (i = 0; i < 12; i++){
+      m = (lo + hi) / 2;
+      lon = lonA + (lonB-lonA)*m;
+      sla = slaA + (slaB-slaA)*m; cla = claA + (claB-claA)*m;
+      l = lon - rotR;
+      cosc = sp0*sla + cp0*cla*Math.cos(l);
+      if (cosc > 0) lo = m; else hi = m;
+    }
+    m = (lo + hi) / 2;
+    lon = lonA + (lonB-lonA)*m;
+    sla = slaA + (slaB-slaA)*m; cla = claA + (claB-claA)*m;
+    l = lon - rotR;
+    return [ g.cx + g.r*cla*Math.sin(l),
+             g.cy - g.r*(cp0*sla - sp0*cla*Math.cos(l)) ];
+  }
+
+  function drawGlobeLand(g){
+    if (!RINGS) return;
+    var sp0 = Math.sin(rad(g.lat0)), cp0 = Math.cos(rad(g.lat0)), rotR = rad(state.rot);
+    /* the unit vector we are looking down */
+    var vx = cp0*Math.cos(rotR), vy = cp0*Math.sin(rotR), vz = sp0;
+    var fill = LAND_STYLE !== "outline";
+    var k, i, t, ring, vis, prevVis, start, anyVis, allVis, lp, ang, exitAng;
+
+    for (var pass = fill ? 0 : 1; pass < 2; pass++){
+      if (pass === 1) ctx.beginPath();
+      for (k = 0; k < RINGS.length; k++){
+        ring = RINGS[k];
+        /* if the whole ring sits more than a quarter turn away, it is behind us */
+        var sep = Math.acos(Math.max(-1, Math.min(1, ring.cx*vx + ring.cy*vy + ring.cz*vz)));
+        if (sep - ring.cap > Math.PI/2) continue;
+
+        if (pass === 0) ctx.beginPath();
+        project(ring, g, sp0, cp0, rotR);
+        anyVis = false; allVis = true; start = 0;
+        for (i = 0; i < ring.n; i++){
+          if (PV[i]){ if (!anyVis) start = i; anyVis = true; } else allVis = false;
+        }
+        if (!anyVis) continue;
+
+        if (allVis){
+          for (i = 0; i < ring.n; i++){
+            if (i) ctx.lineTo(PX[i], PY[i]); else ctx.moveTo(PX[i], PY[i]);
+          }
+          if (pass === 0){ ctx.closePath(); ctx.fillStyle = PAL.landFill; ctx.fill(); }
+          else ctx.lineTo(PX[0], PY[0]);
+          continue;
+        }
+
+        prevVis = 0; exitAng = null;
+        for (t = 0; t <= ring.n; t++){
+          i = (start + t) % ring.n;
+          var prevI = (start + t - 1 + ring.n) % ring.n;
+          vis = PV[i];
+          if (t === 0){ ctx.moveTo(PX[i], PY[i]); }
+          else if (pass === 1 && ring.seam[i] && ring.seam[prevI]){
+            /* the flat map's rings were cut at ±180; drawing along that cut
+               would paint a coast down the Pacific that isn't there */
+            if (vis) ctx.moveTo(PX[i], PY[i]);
+          }
+          else if (vis && prevVis){ ctx.lineTo(PX[i], PY[i]); }
+          else if (!vis && prevVis){
+            lp = limbAt(ring, prevI, i, g, sp0, cp0, rotR);
+            ctx.lineTo(lp[0], lp[1]);
+            if (pass === 0) exitAng = Math.atan2(lp[1]-g.cy, lp[0]-g.cx);
+          }
+          else if (vis && !prevVis){
+            lp = limbAt(ring, i, prevI, g, sp0, cp0, rotR);
+            ang = Math.atan2(lp[1]-g.cy, lp[0]-g.cx);
+            if (pass === 0 && exitAng !== null){
+              /* close along the horizon, the short way round. Land that leaves
+                 the front of the world and comes back always does so over a
+                 short stretch of limb, because the far side of that stretch is
+                 the part we cannot see. */
+              var dd = ang - exitAng;
+              while (dd >  Math.PI) dd -= 2*Math.PI;
+              while (dd < -Math.PI) dd += 2*Math.PI;
+              var steps = Math.max(2, Math.min(24, Math.ceil(Math.abs(dd)/0.08)));
+              for (var q = 1; q <= steps; q++){
+                var aq = exitAng + dd*(q/steps);
+                ctx.lineTo(g.cx + g.r*Math.cos(aq), g.cy + g.r*Math.sin(aq));
+              }
+            }
+            else ctx.moveTo(lp[0], lp[1]);
+            ctx.lineTo(PX[i], PY[i]);
+          }
+          prevVis = vis;
+        }
+        if (pass === 0){ ctx.closePath(); ctx.fillStyle = PAL.landFill; ctx.fill(); }
+      }
+      if (pass === 1){
+        ctx.strokeStyle = PAL.landLine;
+        ctx.lineWidth = fill ? 0.6 : 0.75;
+        ctx.lineJoin = ctx.lineCap = "round";
+        ctx.stroke();
       }
     }
-    sCache = { d:d, pts:pts };
-    return pts;
   }
+
 
   /* ------------------------------------------------ drawing */
   function dotR(n){
@@ -240,18 +381,16 @@
     opt = opt || {};
     var r = dotR(row.poets.length)*(opt.scale||1);
     var on = state.hover===i || state.sel===i;
-    var ring = row.precision !== "city";
     var dim = opt.dim||1;
+    /* One mark for everyone. A pin sits at the finest place we were told —
+       the town where we know it, the country where that's all anyone said.
+       Which of the two it is shows in the card, not as a second symbol the
+       reader would have to decode from a key. */
     ctx.beginPath(); ctx.arc(x,y,r,0,6.2832);
-    if (ring){
-      ctx.strokeStyle = "rgba(" + (on?PAL.hot:PAL.dot) + "," + ((on?1:0.9)*dim) + ")";
-      ctx.lineWidth = Math.max(1.2, r*0.32); ctx.stroke();
-    } else {
-      ctx.fillStyle = "rgba(" + (on?PAL.hot:PAL.dot) + "," + ((on?1:0.92)*dim) + ")";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(" + PAL.sep + "," + (0.55*dim) + ")";
-      ctx.lineWidth = 0.7; ctx.stroke();
-    }
+    ctx.fillStyle = "rgba(" + (on?PAL.hot:PAL.dot) + "," + ((on?1:0.92)*dim) + ")";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(" + PAL.sep + "," + (0.55*dim) + ")";
+    ctx.lineWidth = 0.7; ctx.stroke();
     if (on){
       ctx.beginPath(); ctx.arc(x,y,r+3.5,0,6.2832);
       ctx.strokeStyle = "rgba(" + PAL.hot + ",.55)"; ctx.lineWidth = 1; ctx.stroke();
@@ -267,8 +406,10 @@
         if (k) ctx.lineTo(s[0],s[1]); else ctx.moveTo(s[0],s[1]);
       });
       ctx.closePath();
-      ctx.fillStyle = PAL.landFill; ctx.fill();
-      ctx.strokeStyle = PAL.landLine; ctx.lineWidth = 0.6; ctx.stroke();
+      if (LAND_STYLE !== "outline"){ ctx.fillStyle = PAL.landFill; ctx.fill(); }
+      ctx.strokeStyle = PAL.landLine;
+      ctx.lineWidth = LAND_STYLE === "outline" ? 0.75 : 0.6;
+      ctx.stroke();
     });
     ROWS.forEach(function(row,i){ var s = pFlat(row.lon,row.lat); placeDot(s[0],s[1],row,i); });
   }
@@ -279,11 +420,7 @@
     ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(g.cx,g.cy,g.r,0,6.2832); ctx.fill();
     ctx.strokeStyle = PAL.rim; ctx.lineWidth = 0.9;
     ctx.beginPath(); ctx.arc(g.cx,g.cy,g.r,0,6.2832); ctx.stroke();
-    sphereDots().forEach(function(ll){
-      var p = pGlobe(ll[0],ll[1],g); if (!p) return;
-      ctx.fillStyle = "rgba(1,83,219," + (0.30 + 0.62*p[2]).toFixed(3) + ")";
-      ctx.beginPath(); ctx.arc(p[0],p[1], (1.0 + 0.5*p[2])*Math.min(1.6,state.gz), 0, 6.2832); ctx.fill();
-    });
+    drawGlobeLand(g);
     ROWS.forEach(function(row,i){
       var p = pGlobe(row.lon,row.lat,g); if (!p) return;
       placeDot(p[0],p[1],row,i,{ dim: 0.5 + 0.5*p[2], scale: 0.74 + 0.36*p[2] });
@@ -489,7 +626,7 @@
       x.setAttribute("aria-pressed", x === b ? "true" : "false");
     });
     hint.textContent = state.view === "globe"
-      ? "Pinch to zoom · drag to turn" : "Pinch to zoom · drag to move";
+      ? "Pinch to zoom, drag to turn" : "Pinch to zoom, drag to move";
     resetView(); resize();
   });
 
@@ -774,7 +911,7 @@
       });
       ROWS = d.places;
       MAXN = Math.max.apply(null, ROWS.map(function(r){ return r.poets.length; }).concat([1]));
-      buildMask();
+      prepareRings();
       resize();
       ready = true;
       mark();
