@@ -173,7 +173,7 @@
   }
 
   var state = { view:"globe", hover:null, sel:null, rot:-20, tilt:12,
-                spin:true, z:1, px:0, py:0, gz:1 };
+                spin:true, z:1, px:0, py:0, gz:1, pin:false };
   var LAND = [], ROWS = [], MAXN = 1;
   var W = 0, H = 0, DPR = 1, hits = [], dirty = true, ready = false;
   function mark(){ dirty = true; }
@@ -476,7 +476,8 @@
     card.classList.add("opa-on");
     card.classList.toggle("opa-pin", !!pin);
     var x = card.querySelector(".opa-x");
-    if (x) x.onclick = function(){ state.sel = null; card.classList.remove("opa-on","opa-pin"); mark(); };
+    if (x) x.onclick = function(){ state.sel = null; state.pin = false;
+      card.classList.remove("opa-on","opa-pin"); mark(); };
   }
   function showGroup(title, rowsIn){
     var people = [], where = [];
@@ -489,8 +490,10 @@
     if (where.length) meta.push(where.slice(0,6).join(", ") + (where.length>6 ? "…" : ""));
     card.innerHTML = cardHTML(title, meta.join(" · "), people);
     card.classList.add("opa-on","opa-pin");
+    state.pin = true;
     var x = card.querySelector(".opa-x");
-    if (x) x.onclick = function(){ state.sel = null; card.classList.remove("opa-on","opa-pin"); mark(); };
+    if (x) x.onclick = function(){ state.sel = null; state.pin = false;
+      card.classList.remove("opa-on","opa-pin"); mark(); };
   }
 
   /* ------------------------------------------------ zoom / pan / pick */
@@ -519,7 +522,7 @@
   }
   function resetView(){
     state.z = 1; state.gz = 1; state.px = 0; state.py = 0; state.tilt = 12;
-    state.spin = true; state.sel = null;
+    state.spin = true; state.sel = null; state.pin = false;
     card.classList.remove("opa-on","opa-pin"); mark();
   }
   function local(ev){
@@ -579,7 +582,7 @@
     var i = pick(ev);
     if (i !== state.hover){
       state.hover = i;
-      if (state.sel === null){
+      if (state.sel === null && !state.pin){
         if (i !== null) showRow(i, false); else card.classList.remove("opa-on","opa-pin");
       }
       mark();
@@ -598,6 +601,7 @@
     var i = pick(ev);
     if (i === null){ resetView(); return; }
     state.sel = (i === state.sel) ? null : i;
+    state.pin = state.sel !== null;
     if (state.sel !== null) showRow(state.sel, true);
     else card.classList.remove("opa-on","opa-pin");
     mark();
@@ -607,7 +611,7 @@
   });
   cv.addEventListener("mouseleave", function(){
     state.hover = null;
-    if (state.sel === null) card.classList.remove("opa-on","opa-pin");
+    if (state.sel === null && !state.pin) card.classList.remove("opa-on","opa-pin");
     mark();
   });
   cv.addEventListener("dblclick", function(ev){ var l = local(ev); zoomAt(1.8, l[0], l[1]); });
@@ -617,7 +621,7 @@
   root.querySelector(".opa-reset").onclick = resetView;
 
   function atRest(){
-    return state.sel === null && state.spin && state.gz === 1 && state.z === 1 &&
+    return state.sel === null && !state.pin && state.spin && state.gz === 1 && state.z === 1 &&
            !state.px && !state.py && !card.classList.contains("opa-on");
   }
   document.addEventListener("pointerdown", function(ev){
@@ -632,7 +636,7 @@
     var b = ev.target.closest ? ev.target.closest("button") : null;
     if (!b) return;
     state.view = b.getAttribute("data-v") === "globe" ? "globe" : "flat";
-    state.hover = state.sel = null;
+    state.hover = state.sel = null; state.pin = false;
     card.classList.remove("opa-on","opa-pin");
     Array.prototype.forEach.call(bar.children, function(x){
       x.setAttribute("aria-pressed", x === b ? "true" : "false");
