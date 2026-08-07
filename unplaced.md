@@ -2,8 +2,8 @@
 
 Rebuilt automatically. Do not edit by hand — change the CMS instead.
 
-- contributors in the CMS: **270**
-- placed on the map: **259**
+- contributors in the CMS: **267**
+- placed on the map: **256**
 - no location on file: **11**
 - had a location we could not place: **0**
 
@@ -26,7 +26,7 @@ Fill in `from` or `lives` on their CMS record and they appear next run.
 
 ## Location on file, but we could not place it
 
-These need a coordinate adding to `build/geo.py`. Until then the person
+These need a coordinate adding to `geo.py`. Until then the person
 sits at a coarser pin or is missing entirely, so the build fails on purpose.
 
 _nobody_
