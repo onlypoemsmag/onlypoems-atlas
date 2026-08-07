@@ -32,7 +32,9 @@
       "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.11em;",
       "text-transform:uppercase;padding:9px 15px;cursor:pointer;transition:.18s;border-radius:11px}",
     ".opa-bar button:hover{background:#ffa8fa}",
-    ".opa-bar button[aria-pressed=true]{background:#cc69c7;color:#fefcff}",
+    /* Navy, not near-white. Eleven-pixel uppercase on this pink came to
+       3.2:1; navy on the same pink is 4.8:1 and the pill is unchanged. */
+    ".opa-bar button[aria-pressed=true]{background:#cc69c7;color:#05214e}",
     ".opa-stage{position:relative;border:1px solid rgba(5,33,78,.14);border-radius:11px;overflow:hidden;background:#fefcff}",
     /* touch-action:none, not pan-y. pan-y hands every touch to the browser —
        including the second finger — so on a phone the pinch never arrived and
@@ -52,6 +54,18 @@
     "@media (pointer:coarse){.opa-zoom{right:10px;top:10px;gap:6px}",
       ".opa-zoom button{width:40px;height:40px;font-size:16px}",
       ".opa-zoom button.opa-wide{width:auto;padding:0 14px}}",
+    /* On a phone all three buttons in one cluster lie across the top of the
+       globe. Split them into the two corners the sphere cannot reach: minus
+       and plus top right, Reset bottom right. display:contents drops the
+       wrapper's box so each button positions against the stage instead of
+       against the cluster. 720px is where the legend goes, so the bottom
+       right is free. The minus inset is the plus's, plus a button, plus the
+       gap — and a button is 40px to a thumb, 30px to a cursor. */
+    "@media (max-width:720px){.opa-zoom{display:contents}",
+      ".opa-zoom .opa-out{position:absolute;top:10px;right:56px}",
+      ".opa-zoom .opa-in{position:absolute;top:10px;right:10px}",
+      ".opa-zoom .opa-reset{position:absolute;bottom:10px;right:10px}}",
+    "@media (max-width:720px) and (pointer:fine){.opa-zoom .opa-out{right:46px}}",
     ".opa-legend{position:absolute;right:14px;bottom:12px;display:flex;gap:16px;align-items:center;",
       "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
       "color:rgba(5,33,78,.68);pointer-events:none}",
@@ -88,16 +102,32 @@
 
     /* --- the four counters double as the index, as in the original --- */
     "#" + ROOT_ID + "{scroll-margin-top:150px}",
+    /* No text-align here. This class lands on the page's own .op-atlas-stat,
+       which is centred, and a button reset saying left would win the tie on
+       load order alone — invisibly, and only on the live page, never in the
+       Designer, which does not run this file. */
     ".opa-ct{appearance:none;background:none;border:0;padding:6px 10px 8px;margin:0 -10px;",
-      "text-align:left;border-radius:11px;cursor:pointer;transition:.16s;font:inherit;color:inherit}",
+      "border-radius:11px;cursor:pointer;transition:.16s;font:inherit;color:inherit}",
     ".opa-ct:hover{background:#fde7ff}",
     ".opa-ct:focus-visible{outline:2px solid #cc69c7;outline-offset:2px}",
-    ".opa-ct[aria-expanded=true]{background:#cc69c7;color:#fefcff}",
-    ".opa-ct[aria-expanded=true] .op-atlas-lab{color:#fefcff;opacity:.8}",
-    /* line-height 1 keeps the caret from growing the label's line box when it
-       is added, which nudged the whole page down by a few pixels on load */
-    ".opa-caret{font-style:normal;font-family:brother-1816,'Brother 1816',sans-serif;",
-      "font-size:10px;line-height:1;vertical-align:baseline;opacity:.7;margin-left:6px}",
+    /* Navy on the pink, not near-white: at eleven pixels the light fill came
+       to 3.2:1, under the 4.5 a small size wants. This is 4.8:1, and the
+       label takes it by inheritance rather than being dimmed on top. */
+    ".opa-ct[aria-expanded=true]{background:#cc69c7;color:#05214e}",
+    /* The label carries its own colour on the page, so it does not inherit
+       the line above — and it used to be dimmed to 80% on top of that, which
+       dropped it to 3.1:1. Stated, at full strength: 4.8:1. */
+    ".opa-ct[aria-expanded=true] .op-atlas-lab{color:#05214e;opacity:1}",
+    /* The caret is the only thing saying a figure opens. Inside the label's
+       line it pushed the word off the centre of the number above it, so it
+       sits under the word on a line of its own, where it costs no width and
+       shares the same axis. line-height 1 keeps it from growing the box on
+       load. It turns over when the panel is open. */
+    ".opa-caret{display:block;font-style:normal;color:inherit;",
+      "font-family:brother-1816,'Brother 1816',sans-serif;",
+      "font-size:10px;line-height:1;margin:2px 0 0;transition:transform .18s ease}",
+    ".opa-ct[aria-expanded=true] .opa-caret{transform:rotate(180deg)}",
+    "@media (prefers-reduced-motion:reduce){.opa-caret{transition:none}}",
     ".opa-panel{display:none;border-top:1px solid rgba(5,33,78,.14);",
       "border-bottom:1px solid rgba(5,33,78,.14);padding:22px 0 24px;margin:0 0 6px}",
     ".opa-panel.opa-on{display:block}",
