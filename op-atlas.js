@@ -923,7 +923,18 @@
     var idx = document.querySelector(".op-atlas-index");   // put the list back
     if (idx) idx.className += " opa-show";
   }
-  fetch(DATA, { credentials: "omit" })
+  /* Ask whether atlas.json has moved on, rather than trusting what we were
+     handed last time. jsDelivr labels a file on a branch max-age=604800, so a
+     reader who came last week would keep their own copy for another week and
+     never see the rebuild. "no-cache" means revalidate, not re-download:
+     unchanged data comes back as a 304 with no body. If the network is
+     unreachable, an old copy is far better than no map at all. */
+  function load(){
+    return fetch(DATA, { credentials: "omit", cache: "no-cache" })
+      .catch(function(){ return fetch(DATA, { credentials: "omit" }); });
+  }
+
+  load()
     .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function(d){
       LAND = d.land.filter(function(r){
