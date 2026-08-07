@@ -68,13 +68,47 @@
     ".opa-x{position:absolute;right:10px;top:9px;width:20px;height:20px;border:0;background:none;",
       "color:rgba(5,33,78,.6);cursor:pointer;font-size:15px;line-height:1;display:none;padding:0}",
     ".opa-card.opa-pin .opa-x{display:block}",
-    ".opa-go{font-family:brother-1816,'Brother 1816',sans-serif;font-size:9px;letter-spacing:.14em;",
-      "text-transform:uppercase;color:rgba(5,33,78,.6);margin-top:11px;display:none}",
-    ".opa-card.opa-pin .opa-go{display:block}",
     "@media (max-width:720px){.opa-card{position:static;width:auto;max-width:none;opacity:1;transform:none;",
       "pointer-events:auto;border:0;border-top:1px solid rgba(5,33,78,.14);border-radius:0;backdrop-filter:none}",
       ".opa-card:not(.opa-on){display:none}.opa-card.opa-right{top:auto}",
-      ".opa-legend,.opa-hint{display:none}}"
+      ".opa-legend,.opa-hint{display:none}}",
+
+    /* --- the four counters double as the index, as in the original --- */
+    "#" + ROOT_ID + "{scroll-margin-top:150px}",
+    ".opa-ct{appearance:none;background:none;border:0;padding:6px 10px 8px;margin:0 -10px;",
+      "text-align:left;border-radius:11px;cursor:pointer;transition:.16s;font:inherit;color:inherit}",
+    ".opa-ct:hover{background:#fde7ff}",
+    ".opa-ct:focus-visible{outline:2px solid #cc69c7;outline-offset:2px}",
+    ".opa-ct[aria-expanded=true]{background:#cc69c7;color:#fefcff}",
+    ".opa-ct[aria-expanded=true] .op-atlas-lab{color:#fefcff;opacity:.8}",
+    ".opa-caret{font-style:normal;font-family:brother-1816,'Brother 1816',sans-serif;",
+      "font-size:9px;opacity:.55;margin-left:6px}",
+    ".opa-panel{display:none;border-top:1px solid rgba(5,33,78,.14);",
+      "border-bottom:1px solid rgba(5,33,78,.14);padding:22px 0 24px;margin:0 0 6px}",
+    ".opa-panel.opa-on{display:block}",
+    ".opa-cols{columns:4 180px;column-gap:30px}",
+    ".opa-pitem{display:block;break-inside:avoid;padding:3px 0;font-size:15px;line-height:1.45;",
+      "cursor:pointer;color:#05214e;border:0;background:none;font-family:inherit;text-align:left;",
+      "width:100%;text-decoration:none;transition:color .15s}",
+    ".opa-pitem:hover{color:#cc69c7}",
+    ".opa-pitem u{text-decoration:none;font-family:brother-1816,'Brother 1816',sans-serif;",
+      "font-size:11px;color:rgba(5,33,78,.6);margin-left:6px}",
+    ".opa-pgroup{break-inside:avoid;margin:0 0 18px}",
+    ".opa-pgroup h5{font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;",
+      "letter-spacing:.19em;text-transform:uppercase;color:rgba(5,33,78,.6);margin:0 0 6px;font-weight:400}",
+    ".opa-pgroup h5 span{opacity:.55;margin-left:4px}",
+    ".opa-phint{font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;letter-spacing:.14em;",
+      "text-transform:uppercase;color:rgba(5,33,78,.3);margin:0 0 14px}",
+    ".opa-seemore{appearance:none;border:0;background:none;padding:5px 0 0;cursor:pointer;display:block;",
+      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:9.5px;letter-spacing:.14em;",
+      "text-transform:uppercase;color:#cc69c7;text-align:left}",
+    ".opa-seemore:hover{opacity:.7}",
+    /* the written-out index stays in the page for search engines and screen
+       readers; the panels above are the sighted way in */
+    ".opa-sr{position:absolute!important;width:1px!important;height:1px!important;",
+      "overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;",
+      "margin:-1px!important;padding:0!important;border:0!important}",
+    "@media (max-width:720px){.opa-cols{columns:1}}"
   ].join("");
 
   var st = document.createElement("style");
@@ -280,8 +314,7 @@
     }).join("");
     var more = people.length>80 ? '<li style="color:rgba(5,33,78,.6)">+ ' + (people.length-80) + " more</li>" : "";
     return '<button type="button" class="opa-x" aria-label="Close">&times;</button>' +
-           "<h3>" + esc(title) + '</h3><div class="opa-meta">' + esc(meta) + "</div><ul>" + li + more + "</ul>" +
-           '<div class="opa-go">Click a name to open their page &middot; click away to close</div>';
+           "<h3>" + esc(title) + '</h3><div class="opa-meta">' + esc(meta) + "</div><ul>" + li + more + "</ul>";
   }
   function showRow(i, pin){
     var r = ROWS[i], h = null, k;
@@ -293,6 +326,20 @@
     card.innerHTML = cardHTML(r.city ? r.city + ", " + r.country : r.country, bits.join(" · "), r.poets);
     card.classList.add("opa-on");
     card.classList.toggle("opa-pin", !!pin);
+    var x = card.querySelector(".opa-x");
+    if (x) x.onclick = function(){ state.sel = null; card.classList.remove("opa-on","opa-pin"); mark(); };
+  }
+  function showGroup(title, rowsIn){
+    var people = [], where = [];
+    rowsIn.forEach(function(r){
+      people = people.concat(r.poets);
+      if (r.precision === "city") where.push(r.city);
+    });
+    card.classList.remove("opa-right");
+    var meta = [ people.length + (people.length===1 ? " poet" : " poets") ];
+    if (where.length) meta.push(where.slice(0,6).join(", ") + (where.length>6 ? "…" : ""));
+    card.innerHTML = cardHTML(title, meta.join(" · "), people);
+    card.classList.add("opa-on","opa-pin");
     var x = card.querySelector(".opa-x");
     if (x) x.onclick = function(){ state.sel = null; card.classList.remove("opa-on","opa-pin"); mark(); };
   }
@@ -457,6 +504,191 @@
   var rt;
   window.addEventListener("resize", function(){ clearTimeout(rt); rt = setTimeout(resize, 140); });
 
+  /* ------------------------------------------------ counters as the index
+     The four numbers above the map open a panel underneath themselves, the way
+     the original did. The written-out index further down the page stays in the
+     HTML — it just stops taking up the screen. */
+  var SHORT = { "United States":"USA", "United Kingdom":"UK", "United Arab Emirates":"UAE" };
+  function brief(c){ return SHORT[c] || c; }
+  function hintLine(s){ return '<p class="opa-phint">' + esc(s) + "</p>"; }
+  function tally(key){
+    var t = {}, order = [];
+    ROWS.forEach(function(r){
+      var k = r[key];
+      if (!(k in t)){ t[k] = 0; order.push(k); }
+      t[k] += r.poets.length;
+    });
+    order.sort(function(a,b){ return t[b] - t[a] || a.localeCompare(b); });
+    return { t:t, order:order };
+  }
+  var PANELS = {
+    people: function(){
+      var all = [];
+      ROWS.forEach(function(r){
+        var w = r.city ? r.city + ", " + brief(r.country) : brief(r.country);
+        r.poets.forEach(function(p){ all.push({ n:p.n, u:p.u, w:w }); });
+      });
+      all.sort(function(a,b){ return a.n.localeCompare(b.n); });
+      var missing = Math.max(0, published - all.length);
+      return hintLine(all.length + " placed" + (missing ? " · " + missing + " still without a location" : "")) +
+        '<div class="opa-cols">' + all.map(function(p){
+          return '<a class="opa-pitem" href="' + p.u + '">' + esc(p.n) + "<u>" + esc(p.w) + "</u></a>";
+        }).join("") + "</div>";
+    },
+    countries: function(){
+      var q = tally("country");
+      return hintLine("Click a country to open it on the map") +
+        '<div class="opa-cols">' + q.order.map(function(c){
+          return '<button type="button" class="opa-pitem" data-country="' + esc(c) + '">' +
+                 esc(c) + "<u>" + q.t[c] + "</u></button>";
+        }).join("") + "</div>";
+    },
+    continents: function(){
+      var q = tally("continent");
+      return hintLine("Click a continent to open it on the map") +
+        '<div class="opa-cols">' + q.order.map(function(c){
+          return '<button type="button" class="opa-pitem" data-continent="' + esc(c) + '">' +
+                 esc(c) + "<u>" + q.t[c] + "</u></button>";
+        }).join("") + "</div>";
+    },
+    cities: function(){
+      var by = {};
+      ROWS.forEach(function(r,i){
+        if (r.precision !== "city") return;
+        (by[r.continent] = by[r.continent] || []).push([r,i]);
+      });
+      var order = ["North America","South America","Europe","Africa","Asia","Oceania"];
+      Object.keys(by).forEach(function(c){ if (order.indexOf(c) < 0) order.push(c); });
+      function btn(pair){
+        return '<button type="button" class="opa-pitem" data-row="' + pair[1] + '">' +
+               esc(pair[0].city) + "<u>" + pair[0].poets.length + "</u></button>";
+      }
+      var html = order.filter(function(c){ return by[c]; }).map(function(c){
+        var list = by[c].slice().sort(function(a,b){
+          return b[0].poets.length - a[0].poets.length || a[0].city.localeCompare(b[0].city);
+        });
+        var shown = list.slice(0,10), rest = list.slice(10);
+        return '<div class="opa-pgroup"><h5>' + esc(c) + " <span>" + list.length + "</span></h5>" +
+          shown.map(btn).join("") +
+          (rest.length
+            ? '<span class="opa-rest" hidden>' + rest.map(btn).join("") + "</span>" +
+              '<button type="button" class="opa-seemore" data-n="' + list.length + '">See all ' +
+              list.length + " &rarr;</button>"
+            : "") + "</div>";
+      }).join("");
+      return hintLine("Cities and towns only — state and country pins are in the country list") +
+        '<div class="opa-cols">' + html + "</div>";
+    }
+  };
+
+  var published = 0, panel = null;
+  function keyFor(label){
+    var s = (label || "").toLowerCase();
+    if (s.indexOf("countr")   >= 0) return "countries";
+    if (s.indexOf("continent") >= 0) return "continents";
+    if (s.indexOf("cit")      >= 0) return "cities";
+    if (s.indexOf("poet")     >= 0 || s.indexOf("people") >= 0) return "people";
+    return null;
+  }
+  function bringMapIntoView(){
+    if (root.scrollIntoView) root.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "start" });
+  }
+  function buildCounters(){
+    var stats = document.querySelectorAll(".op-atlas-stat");
+    if (!stats.length) return;
+    panel = document.createElement("div");
+    panel.className = "opa-panel";
+    panel.id = "op-atlas-panel";
+    var host = stats[0].parentNode;
+    if (host.parentNode) host.parentNode.insertBefore(panel, host.nextSibling);
+
+    var wired = [];
+    Array.prototype.forEach.call(stats, function(el){
+      var lab = el.querySelector(".op-atlas-lab");
+      var key = keyFor(lab ? lab.textContent : el.textContent);
+      if (!key || !PANELS[key]) return;
+      if (key === "people"){
+        var num = el.querySelector(".op-atlas-num");
+        published = parseInt((num ? num.textContent : "").replace(/[^0-9]/g,""), 10) || 0;
+      }
+      el.className += " opa-ct";
+      el.setAttribute("role", "button");
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("aria-expanded", "false");
+      el.setAttribute("aria-controls", "op-atlas-panel");
+      el.setAttribute("data-panel", key);
+      if (lab && !lab.querySelector(".opa-caret")){
+        var caret = document.createElement("em");
+        caret.className = "opa-caret";
+        caret.textContent = "▾";
+        lab.appendChild(caret);
+      }
+      wired.push(el);
+    });
+    if (!wired.length) return;
+
+    function toggle(el){
+      var open = el.getAttribute("aria-expanded") === "true";
+      wired.forEach(function(x){ x.setAttribute("aria-expanded", "false"); });
+      if (open){ panel.classList.remove("opa-on"); panel.innerHTML = ""; return; }
+      el.setAttribute("aria-expanded", "true");
+      panel.innerHTML = PANELS[el.getAttribute("data-panel")]();
+      panel.classList.add("opa-on");
+    }
+    wired.forEach(function(el){
+      el.addEventListener("click", function(){ toggle(el); });
+      el.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" || ev.key === " " || ev.key === "Spacebar"){
+          ev.preventDefault(); toggle(el);
+        }
+      });
+    });
+
+    panel.addEventListener("click", function(ev){
+      var t = ev.target, more = t.closest && t.closest(".opa-seemore");
+      if (more){
+        var rest = more.parentNode.querySelector(".opa-rest");
+        if (rest.hasAttribute("hidden")){ rest.removeAttribute("hidden"); more.textContent = "See fewer"; }
+        else { rest.setAttribute("hidden",""); more.textContent = "See all " + more.getAttribute("data-n") + " →"; }
+        return;
+      }
+      var b = t.closest && t.closest("button.opa-pitem");
+      if (!b) return;
+      var rowAttr = b.getAttribute("data-row"),
+          ctry    = b.getAttribute("data-country"),
+          cont    = b.getAttribute("data-continent"), rs;
+      stopSpin();
+      if (rowAttr !== null){
+        var i = +rowAttr, r = ROWS[i];
+        state.sel = i;
+        if (state.view === "globe"){
+          state.rot = r.lon;
+          state.tilt = Math.max(-60, Math.min(60, r.lat));
+        }
+        mark();
+        requestAnimationFrame(function(){ showRow(i, true); });
+      } else if (ctry){
+        rs = ROWS.filter(function(r){ return r.country === ctry; });
+        if (rs.length && state.view === "globe"){
+          state.rot = rs[0].lon;
+          state.tilt = Math.max(-60, Math.min(60, rs[0].lat));
+        }
+        state.sel = null; mark(); showGroup(ctry, rs);
+      } else if (cont){
+        rs = ROWS.filter(function(r){ return r.continent === cont; });
+        state.sel = null; mark(); showGroup(cont, rs);
+      } else return;
+      bringMapIntoView();
+    });
+
+    /* the map's click-away reset must not fire when the panel is in use */
+    panel.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
+
+    /* now that the panels exist, the written-out index can step out of the way */
+    var idx = document.querySelector(".op-atlas-index");
+    if (idx) idx.className += " opa-sr";
+  }
+
   /* ------------------------------------------------ go */
   function fail(msg){
     root.innerHTML = '<p style="font-family:brother-1816,sans-serif;font-size:10px;letter-spacing:.19em;' +
@@ -474,6 +706,7 @@
       resize();
       ready = true;
       mark();
+      try { buildCounters(); } catch (e) { /* the map still works without them */ }
     })
     .catch(function(){
       fail("The map could not load. The list of places below is complete.");
