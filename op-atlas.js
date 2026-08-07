@@ -689,6 +689,78 @@
     if (idx) idx.className += " opa-sr";
   }
 
+  /* ------------------------------------------------ keep the page honest
+     The four figures and the written-out index are real HTML, so a search
+     engine reads them without running any of this. That also means they are
+     only as current as the last publish. Once the data is here we know the
+     true numbers, so we correct them — and rebuild the index — in place.
+     Nothing else on the page is touched: the essay is Karan's. */
+  var CONT_ORDER = ["North America","South America","Europe","Africa","Asia","Oceania"];
+
+  function setNum(el, n){
+    if (!el || n == null) return;
+    var now = parseInt((el.textContent || "").replace(/[^0-9]/g, ""), 10);
+    if (now !== n) el.textContent = String(n);
+  }
+
+  function refreshCounters(totals){
+    var placed = ROWS.reduce(function(t,r){ return t + r.poets.length; }, 0);
+    var countries = {}, continents = {}, cities = 0;
+    ROWS.forEach(function(r){
+      if (r.country) countries[r.country] = 1;
+      if (r.continent && r.continent !== "—") continents[r.continent] = 1;
+      if (r.precision === "city") cities++;
+    });
+    var want = {
+      people:     (totals && totals.contributors) || null,
+      countries:  Object.keys(countries).length,
+      continents: Object.keys(continents).length,
+      cities:     cities
+    };
+    Array.prototype.forEach.call(document.querySelectorAll(".op-atlas-stat"), function(el){
+      var lab = el.querySelector(".op-atlas-lab");
+      var key = keyFor(lab ? lab.textContent : el.textContent);
+      if (key && want[key] != null) setNum(el.querySelector(".op-atlas-num"), want[key]);
+    });
+    published = want.people || placed;
+  }
+
+  function refreshIndex(){
+    var host = document.querySelector(".op-atlas-index-inner");
+    if (!host) return;
+    var byCont = {};
+    ROWS.forEach(function(r){
+      var c = byCont[r.continent] = byCont[r.continent] || { n:0, byCountry:{} };
+      c.n += r.poets.length;
+      (c.byCountry[r.country] = c.byCountry[r.country] || []).push.apply(
+        c.byCountry[r.country], r.poets);
+    });
+    var order = CONT_ORDER.filter(function(c){ return byCont[c]; })
+      .concat(Object.keys(byCont).filter(function(c){ return CONT_ORDER.indexOf(c) < 0; }));
+
+    var html = order.map(function(cont){
+      var c = byCont[cont];
+      var countries = Object.keys(c.byCountry).sort(function(a,b){
+        return c.byCountry[b].length - c.byCountry[a].length || a.localeCompare(b);
+      });
+      return '<div class="op-atlas-cont"><h3 class="op-atlas-conth">' + esc(cont) +
+        ' <span class="op-atlas-contn">' + c.n + "</span></h3>" +
+        countries.map(function(k){
+          var names = c.byCountry[k].slice().sort(function(a,b){
+            return a.n.toLowerCase().localeCompare(b.n.toLowerCase());
+          });
+          return '<p class="op-atlas-ctry"><span class="op-atlas-ctryname">' + esc(k) +
+            "</span>" + names.map(function(p){
+              return p.u
+                ? '<a class="op-atlas-poet" href="' + p.u + '">' + esc(p.n) + "</a>"
+                : '<span class="op-atlas-poet">' + esc(p.n) + "</span>";
+            }).join(", ") + "</p>";
+        }).join("") + "</div>";
+    }).join("");
+
+    if (host.innerHTML !== html) host.innerHTML = html;
+  }
+
   /* ------------------------------------------------ go */
   function fail(msg){
     root.innerHTML = '<p style="font-family:brother-1816,sans-serif;font-size:10px;letter-spacing:.19em;' +
@@ -706,7 +778,9 @@
       resize();
       ready = true;
       mark();
+      try { refreshCounters(d.totals); } catch (e) { /* leave the page's own figures */ }
       try { buildCounters(); } catch (e) { /* the map still works without them */ }
+      try { refreshIndex(); } catch (e) { /* the page's own index stands */ }
     })
     .catch(function(){
       fail("The map could not load. The list of places below is complete.");
