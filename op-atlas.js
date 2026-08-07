@@ -34,7 +34,12 @@
     ".opa-bar button:hover{background:#ffa8fa}",
     ".opa-bar button[aria-pressed=true]{background:#cc69c7;color:#fefcff}",
     ".opa-stage{position:relative;border:1px solid rgba(5,33,78,.14);border-radius:11px;overflow:hidden;background:#fefcff}",
-    ".opa-cv{display:block;width:100%;height:auto;cursor:grab;touch-action:pan-y}",
+    /* touch-action:none, not pan-y. pan-y hands every touch to the browser —
+       including the second finger — so on a phone the pinch never arrived and
+       a drag scrolled the page instead of turning the globe. The picture is
+       kept short enough on a phone (see resize) that there is page either
+       side of it to scroll by. */
+    ".opa-cv{display:block;width:100%;height:auto;cursor:grab;touch-action:none}",
     ".opa-cv.opa-grab{cursor:grabbing}",
     ".opa-zoom{position:absolute;right:12px;top:12px;display:flex;gap:4px}",
     ".opa-zoom button{appearance:none;width:30px;height:30px;border:1px solid #fde7ff;background:#fde7ff;",
@@ -42,6 +47,11 @@
       "font-size:14px;line-height:1;transition:.16s;padding:0}",
     ".opa-zoom button:hover{background:#ffa8fa;border-color:#ffa8fa}",
     ".opa-zoom button.opa-wide{width:auto;padding:0 11px;font-size:11px;letter-spacing:.1em;text-transform:uppercase}",
+    /* A thumb is not a cursor. These are the guaranteed way to zoom, so on a
+       touch screen they get a target somebody can actually hit. */
+    "@media (pointer:coarse){.opa-zoom{right:10px;top:10px;gap:6px}",
+      ".opa-zoom button{width:40px;height:40px;font-size:16px}",
+      ".opa-zoom button.opa-wide{width:auto;padding:0 14px}}",
     ".opa-legend{position:absolute;right:14px;bottom:12px;display:flex;gap:16px;align-items:center;",
       "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
       "color:rgba(5,33,78,.68);pointer-events:none}",
@@ -71,7 +81,10 @@
     "@media (max-width:720px){.opa-card{position:static;width:auto;max-width:none;opacity:1;transform:none;",
       "pointer-events:auto;border:0;border-top:1px solid rgba(5,33,78,.14);border-radius:0;backdrop-filter:none}",
       ".opa-card:not(.opa-on){display:none}.opa-card.opa-right{top:auto}",
-      ".opa-legend,.opa-hint{display:none}}",
+      ".opa-legend{display:none}",
+      /* The hint used to be hidden here too, which left a phone reader with no
+         way of knowing the picture answers to a finger at all. */
+      ".opa-hint{position:static;display:block;padding:9px 2px 0;text-align:center}}",
 
     /* --- the four counters double as the index, as in the original --- */
     "#" + ROOT_ID + "{scroll-margin-top:150px}",
@@ -531,9 +544,12 @@
   }
   function pick(ev){
     var l = local(ev), best = null, bd = 1e9, k, d;
+    /* A fingertip covers about forty pixels; a cursor covers one. Without this
+       a dot on a phone was a two-pixel target and every attempt missed. */
+    var slop = ev.pointerType === "touch" ? 13 : 4;
     for (k=0;k<hits.length;k++){
       d = Math.sqrt(Math.pow(hits[k].x-l[0],2) + Math.pow(hits[k].y-l[1],2));
-      if (d < hits[k].r+4 && d < bd){ bd = d; best = hits[k].i; }
+      if (d < hits[k].r+slop && d < bd){ bd = d; best = hits[k].i; }
     }
     return best;
   }
@@ -599,7 +615,16 @@
     drag.on = false;
     if (wasDrag) return;
     var i = pick(ev);
-    if (i === null){ resetView(); return; }
+    if (i === null){
+      /* A mouse click on empty water is deliberate, so it puts everything back.
+         A tap is usually a near miss, and throwing away the zoom somebody just
+         pinched to would be a punishment. Close the card; RESET is right there. */
+      if (ev.pointerType === "touch"){
+        state.sel = null; state.pin = false;
+        card.classList.remove("opa-on","opa-pin"); mark(); return;
+      }
+      resetView(); return;
+    }
     state.sel = (i === state.sel) ? null : i;
     state.pin = state.sel !== null;
     if (state.sel !== null) showRow(state.sel, true);
@@ -651,6 +676,13 @@
     DPR = Math.min(window.devicePixelRatio||1, 2);
     W = Math.round(box.width);
     H = Math.round(Math.max(340, Math.min(W*(state.view==="globe"?0.62:0.52), 620)));
+    /* On a phone the picture would otherwise stand half the height of the
+       screen, and since the canvas now takes the touches there would be
+       little page left to scroll by. Keep it under half the window. */
+    if (W < 560){
+      var vh = window.innerHeight || 700;
+      H = Math.round(Math.max(260, Math.min(H, vh*0.46)));
+    }
     cv.width = W*DPR; cv.height = H*DPR; cv.style.height = H+"px";
     fitFlat(); mark();
   }
