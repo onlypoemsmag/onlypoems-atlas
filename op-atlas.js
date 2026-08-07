@@ -81,8 +81,10 @@
     ".opa-ct:focus-visible{outline:2px solid #cc69c7;outline-offset:2px}",
     ".opa-ct[aria-expanded=true]{background:#cc69c7;color:#fefcff}",
     ".opa-ct[aria-expanded=true] .op-atlas-lab{color:#fefcff;opacity:.8}",
+    /* line-height 1 keeps the caret from growing the label's line box when it
+       is added, which nudged the whole page down by a few pixels on load */
     ".opa-caret{font-style:normal;font-family:brother-1816,'Brother 1816',sans-serif;",
-      "font-size:10px;opacity:.7;margin-left:6px}",
+      "font-size:10px;line-height:1;vertical-align:baseline;opacity:.7;margin-left:6px}",
     ".opa-panel{display:none;border-top:1px solid rgba(5,33,78,.14);",
       "border-bottom:1px solid rgba(5,33,78,.14);padding:22px 0 24px;margin:0 0 6px}",
     ".opa-panel.opa-on{display:block}",
@@ -103,10 +105,14 @@
       "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
       "text-transform:uppercase;color:#b03fa9;text-align:left}",
     ".opa-seemore:hover{opacity:.7}",
-    /* the written-out index stays in the page for search engines and screen
-       readers; the panels above are the sighted way in */
-    ".opa-sr{position:absolute!important;width:1px!important;height:1px!important;",
-      "overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;",
+    /* The written-out index stays in the page for search engines and screen
+       readers; the panels above are the sighted way in. It is taken out of the
+       flow the moment this file parses — waiting until the data arrives meant
+       the page shrank by the height of 259 names while you were reading it.
+       If the map fails to load, .opa-show puts it back. */
+    ".op-atlas-index:not(.opa-show),.opa-sr{position:absolute!important;",
+      "width:1px!important;height:1px!important;overflow:hidden!important;",
+      "clip:rect(0 0 0 0)!important;white-space:nowrap!important;",
       "margin:-1px!important;padding:0!important;border:0!important}",
     "@media (max-width:720px){.opa-cols{columns:1}}"
   ].join("");
@@ -149,17 +155,21 @@
      lifted the antialiased edges along with everything else and left the dots
      looking soft. Now that land is drawn rather than sampled, the map can just
      be given its own colours. */
-  var DARK = !!(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
-  var PAL = DARK
-    ? { landFill:"rgba(44,66,116,.55)", landLine:"rgba(104,158,245,.72)",
-        sphere:"rgba(80,140,255,.10)", rim:"rgba(104,158,245,.34)",
-        dot:"226,128,220", hot:"255,205,250", sep:"13,19,38" }
-    : { landFill:"rgba(206,220,243,.92)", landLine:"rgba(1,83,219,.55)",
-        sphere:"rgba(1,83,219,.09)", rim:"rgba(1,83,219,.32)",
-        dot:"204,105,199", hot:"76,39,74", sep:"254,252,255" };
-  if (window.matchMedia){
-    var mq = matchMedia("(prefers-color-scheme: dark)");
-    if (mq.addEventListener) mq.addEventListener("change", function(){ location.reload(); });
+  function palette(dark){
+    return dark
+      ? { landFill:"rgba(44,66,116,.55)", landLine:"rgba(104,158,245,.72)",
+          sphere:"rgba(80,140,255,.10)", rim:"rgba(104,158,245,.34)",
+          dot:"226,128,220", hot:"255,205,250", sep:"13,19,38" }
+      : { landFill:"rgba(206,220,243,.92)", landLine:"rgba(1,83,219,.55)",
+          sphere:"rgba(1,83,219,.09)", rim:"rgba(1,83,219,.32)",
+          dot:"204,105,199", hot:"76,39,74", sep:"254,252,255" };
+  }
+  var MQ = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
+  var PAL = palette(!!(MQ && MQ.matches));
+  /* switching the system theme just swaps the colours and redraws — the page
+     itself never reloads */
+  if (MQ && MQ.addEventListener){
+    MQ.addEventListener("change", function(e){ PAL = palette(e.matches); mark(); });
   }
 
   var state = { view:"globe", hover:null, sel:null, rot:-20, tilt:12,
@@ -301,6 +311,8 @@
       for (k = 0; k < RINGS.length; k++){
         ring = RINGS[k];
         /* if the whole ring sits more than a quarter turn away, it is behind us */
+        /* an island narrower than a pixel costs a whole subpath to say nothing */
+        if (g.r * ring.cap < 1.1) continue;
         var sep = Math.acos(Math.max(-1, Math.min(1, ring.cx*vx + ring.cy*vy + ring.cz*vz)));
         if (sep - ring.cap > Math.PI/2) continue;
 
@@ -641,6 +653,11 @@
   var rt;
   window.addEventListener("resize", function(){ clearTimeout(rt); rt = setTimeout(resize, 140); });
 
+  /* Size the canvas straight away rather than waiting for atlas.json. Otherwise
+     the stage stands at the canvas default of 150px while the data is in
+     flight and then shoves the rest of the page down when it arrives. */
+  resize();
+
   /* ------------------------------------------------ counters as the index
      The four numbers above the map open a panel underneath themselves, the way
      the original did. The written-out index further down the page stays in the
@@ -821,9 +838,6 @@
     /* the map's click-away reset must not fire when the panel is in use */
     panel.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
 
-    /* now that the panels exist, the written-out index can step out of the way */
-    var idx = document.querySelector(".op-atlas-index");
-    if (idx) idx.className += " opa-sr";
   }
 
   /* ------------------------------------------------ keep the page honest
@@ -900,8 +914,10 @@
 
   /* ------------------------------------------------ go */
   function fail(msg){
-    root.innerHTML = '<p style="font-family:brother-1816,sans-serif;font-size:10px;letter-spacing:.19em;' +
-      'text-transform:uppercase;color:rgba(5,33,78,.4);padding:40px 0">' + msg + "</p>";
+    root.innerHTML = '<p style="font-family:brother-1816,sans-serif;font-size:11px;' +
+      'letter-spacing:.02em;color:rgba(5,33,78,.62);padding:40px 0">' + msg + "</p>";
+    var idx = document.querySelector(".op-atlas-index");   // put the list back
+    if (idx) idx.className += " opa-show";
   }
   fetch(DATA, { credentials: "omit" })
     .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
@@ -920,7 +936,7 @@
       try { refreshIndex(); } catch (e) { /* the page's own index stands */ }
     })
     .catch(function(){
-      fail("The map could not load. The list of places below is complete.");
+      fail("The map could not load \u2014 the full list of poets is below.");
     });
 
   loop();
