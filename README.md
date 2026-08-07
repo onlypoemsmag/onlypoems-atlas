@@ -1,55 +1,71 @@
 # onlypoems-atlas
 
-The contributor map that runs on **[onlypoems.com/atlas](https://onlypoems.com/atlas)** — a globe and an equal-area world map showing where every poet and writer ONLY POEMS has published is from, or lives now.
+The contributor map that runs on [onlypoems.com/atlas](https://onlypoems.com/atlas) — a globe
+and an equal-area world map showing where every poet and writer ONLY POEMS has published is
+from, or lives now.
 
 ## What's in here
 
 | File | What it is |
 | --- | --- |
 | `op-atlas.js` | The whole map. One self-contained script, no dependencies, no build step. |
-| `atlas.json` | The data it draws: simplified Natural Earth coastlines plus one row per place. |
+| `atlas.json` | The data it draws: simplified Natural Earth coastlines, plus one row per place. |
+| `unplaced.md` | Who isn't on the map, and why. Rewritten by the rebuild — don't edit it by hand. |
+| `build_atlas.py` | The rebuild: reads the CMS, works out where everyone goes, rewrites `atlas.json`. |
+| `geo.py`, `place_rules.py` | Coordinates, and the two rules that decide each person's single dot. |
 
 ## How the page uses it
 
-The Webflow page carries the headline, the counters, the essay and the full poet index as real HTML, so search engines read all of it without running any JavaScript. This script only fills in the map.
-
-Put an empty element with the right id somewhere on the page:
+The page carries the headline, the four figures, the essay and the full poet index as real
+HTML, so search engines read them without running any JavaScript. The script adds the picture
+and the interactions on top, and corrects the figures and the index if the data has moved on
+since the last publish.
 
 ```html
 <div id="op-atlas-map"></div>
+<script src="https://cdn.jsdelivr.net/gh/onlypoemsmag/onlypoems-atlas@v3/op-atlas.js"></script>
 ```
 
-Then load the script anywhere after it:
+`atlas.json` is loaded from the same folder as the script. Point it somewhere else with
+`data-atlas-src` on the container.
 
-```html
-<script src="https://cdn.jsdelivr.net/gh/onlypoemsmag/onlypoems-atlas@v1/op-atlas.js" defer></script>
+Versions are pinned to a tag, so the live site can never be surprised by a change here. To
+ship an update: commit, cut a new tag, and change the number in Webflow. The old tag keeps
+working, which is what makes rolling back a one-character edit.
+
+## Keeping it current
+
+The CMS is the source of truth. Every contributor's place comes from the `from` and `lives`
+fields on their Poets Catalog or Authors record, written most-specific-first:
+
+```
+Chapel Hill, North Carolina, United States
+Colorado, United States
+Ibadan, Nigeria
+Nigeria
 ```
 
-The script finds `#op-atlas-map`, injects its own styles and markup, and fetches `atlas.json` from whatever folder it was loaded from. To point it somewhere else, put the URL on the element:
+Leave both blank and they simply aren't placed — they'll be listed in `unplaced.md`. Tick
+`hide-from-atlas` and they're left off entirely.
 
-```html
-<div id="op-atlas-map" data-atlas-src="https://example.com/atlas.json"></div>
-```
+`.github/workflows/rebuild.yml` runs on the 1st of each month, and on demand from the Actions
+tab. It reads the CMS, rebuilds `atlas.json`, and commits it if anything moved. It needs one
+repository secret, `WEBFLOW_TOKEN` — a Webflow API token with read access to the site's CMS.
 
-If the data can't be fetched, the map replaces itself with a line telling the reader the list of places below is complete. The page never breaks.
+The job **fails on purpose** if somebody has a location on file that `geo.py` has no
+coordinates for. That's the one case worth an email: it means a real person would otherwise
+drop off the map without anyone noticing. Add the coordinates and re-run.
 
-## Versioning
+## Two rules worth knowing
 
-The site loads a pinned tag, never `@main`, so a commit here can't change what's live. To ship an update: push the new files, cut the next tag, then change `@v1` to `@v2` in the Webflow embed.
+**Everybody gets one dot.** When a poet was born in one country and lives in another, the dot
+goes to whichever of the two we've published from least. Nothing is invented — both candidates
+already come from something they published about themselves.
 
-Releases are immutable on jsDelivr once fetched, so the site keeps serving the old files until that one character changes.
+**The map is equal-area.** It's Equal Earth (Šavrič, Patterson & Jenny, 2018), so every country
+covers the share of the page it covers of the earth. Greenland is small. That's correct.
 
-## Where the data comes from
-
-`atlas.json` is generated, not hand-edited. Two sources feed it:
-
-- **Places** — the `from` and `lives` fields on the Poets Catalog and Authors collections in Webflow. Every location traces back to a sentence the writer had already published about themselves. Nobody was geolocated.
-- **Coastlines** — [Natural Earth](https://www.naturalearthdata.com/) 1:50m, public domain, simplified to the points that still change the shape at this size.
-
-The map draws on [Equal Earth](https://equal-earth.com/) (Šavrič, Patterson & Jenny, 2018), an equal-area projection, so every country covers the share of the page it covers of the earth.
-
-Nothing on the page calls out to a tile server. There is no Google Maps or Mapbox here, and no request that reveals where a reader is looking.
-
-## Anything wrong?
-
-If you've been published by us and you're missing, misplaced, or you'd rather not be on the map at all, write to us at [karan@onlypoems.net](mailto:karan@onlypoems.net) and we'll fix it right away.
+Coastlines are Natural Earth 1:50m, public domain, thinned to the points that still change the
+shape at this size. They're drawn point to point every time you move, which is why the map
+stays sharp however far you zoom. There is no tile server and no third-party request: nothing
+on the page calls out to anyone.
