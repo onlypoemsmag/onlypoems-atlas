@@ -68,11 +68,18 @@
     "@media (max-width:720px) and (pointer:fine){.opa-zoom .opa-out{right:46px}}",
     ".opa-legend{position:absolute;right:14px;bottom:12px;display:flex;gap:16px;align-items:center;",
       "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
-      "color:rgba(5,33,78,.68);pointer-events:none}",
+      "color:rgba(5,33,78,.68);pointer-events:none;transition:opacity .2s}",
     ".opa-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#cc69c7;margin-right:6px;vertical-align:middle}",
     ".opa-legend i.opa-ring{background:transparent;border:1px solid #cc69c7}",
     ".opa-hint{position:absolute;left:14px;bottom:12px;font-family:brother-1816,'Brother 1816',sans-serif;",
-      "font-size:11px;letter-spacing:.02em;color:rgba(5,33,78,.62);pointer-events:none}",
+      "font-size:11px;letter-spacing:.02em;color:rgba(5,33,78,.62);pointer-events:none;transition:opacity .2s}",
+    /* Now the card can stand the full height of the picture, it reaches the
+       hint and the legend. Both have done their teaching by the time somebody
+       has a place open, so they step aside. Not on a phone: down there the
+       card sits below the picture and the hint is the only thing saying the
+       picture answers to a finger. */
+    "@media (min-width:721px){.opa-card.opa-on ~ .opa-hint,",
+      ".opa-card.opa-on ~ .opa-legend{opacity:0}}",
     ".opa-card{position:absolute;left:14px;top:14px;width:330px;max-width:calc(100% - 28px);",
       "background:rgba(254,252,255,.94);backdrop-filter:blur(8px);border:1px solid rgba(5,33,78,.14);",
       "border-radius:11px;padding:15px 17px 17px;opacity:0;transform:translateY(-4px);",
@@ -543,17 +550,29 @@
     if (x) x.onclick = function(){ state.sel = null; state.pin = false;
       card.classList.remove("opa-on","opa-pin"); mark(); };
     if (!ul || !note) return;
+    /* How tall the list may stand is measured, not guessed: a long title
+       wraps to two lines and a group card's meta can run to three, so any
+       fixed allowance eventually pushes the card past the bottom edge. */
+    function fit(){
+      ul.style.maxHeight = "";
+      if (window.matchMedia && matchMedia("(max-width:720px)").matches) return;
+      note.hidden = false; note.textContent = " ";   /* reserve its line */
+      ul.style.maxHeight = "0px";
+      var room = stage.clientHeight - card.offsetTop - card.offsetHeight - 16;
+      ul.style.maxHeight = Math.max(140, room) + "px";
+    }
     function tally(){
       var left = ul.scrollHeight - ul.clientHeight - ul.scrollTop;
-      if (left <= 2){ note.hidden = true; return; }
+      if (left <= 2){ note.hidden = true; note.textContent = ""; return; }
       var n = 0, k, li;
       for (k = 0; k < ul.children.length; k++){
         li = ul.children[k];
         if (li.offsetTop - ul.scrollTop + li.offsetHeight > ul.clientHeight + 1) n++;
       }
       note.hidden = n === 0;
-      note.textContent = n + " more below";
+      note.textContent = n ? n + " more below" : "";
     }
+    fit();
     ul.onscroll = tally;
     note.onclick = function(){ ul.scrollTop += ul.clientHeight * 0.82; };
     tally();
