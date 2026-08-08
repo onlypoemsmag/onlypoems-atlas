@@ -83,7 +83,18 @@
     ".opa-card h3{font-family:brother-1816,'Brother 1816',sans-serif;margin:0;font-weight:400;font-size:18px;padding-right:20px}",
     ".opa-meta{font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
       "text-transform:uppercase;color:rgba(5,33,78,.68);margin-top:7px}",
-    ".opa-card ul{list-style:none;margin:12px 0 0;padding:0;max-height:200px;overflow:auto}",
+    /* The list used to stop at a flat 200px, which on a place like New York
+       showed three names out of ten with no sign the other seven existed —
+       macOS hides an overlay scrollbar until you already know to scroll.
+       So: as tall as the picture allows, and a scrollbar that is always
+       there when there is more to read. */
+    ".opa-card ul{list-style:none;margin:12px 0 0;padding:0 5px 0 0;",
+      "max-height:var(--opa-list,260px);overflow:auto;overscroll-behavior:contain;",
+      "scrollbar-width:thin;scrollbar-color:rgba(5,33,78,.3) transparent}",
+    ".opa-card ul::-webkit-scrollbar{width:7px}",
+    ".opa-card ul::-webkit-scrollbar-track{background:transparent}",
+    ".opa-card ul::-webkit-scrollbar-thumb{background:rgba(5,33,78,.3);border-radius:4px}",
+    ".opa-card ul::-webkit-scrollbar-thumb:hover{background:rgba(5,33,78,.48)}",
     ".opa-card li{padding:6px 0;border-top:1px solid rgba(5,33,78,.14);font-size:15px;line-height:1.35}",
     ".opa-card li:first-child{border-top:0}",
     ".opa-card li i{display:block;font-size:13.5px;color:rgba(5,33,78,.68);font-style:italic;line-height:1.45;margin-top:3px}",
@@ -92,9 +103,20 @@
     ".opa-x{position:absolute;right:10px;top:9px;width:20px;height:20px;border:0;background:none;",
       "color:rgba(5,33,78,.68);cursor:pointer;font-size:16px;line-height:1;display:none;padding:0}",
     ".opa-card.opa-pin .opa-x{display:block}",
+    /* Colours inherit from the card so this needs no dark-mode counterpart. */
+    ".opa-scroll-note{display:block;width:100%;margin:9px 0 0;padding:7px 0 0;",
+      "border:0;border-top:1px solid currentColor;background:none;color:inherit;opacity:.62;",
+      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
+      "text-transform:uppercase;text-align:left;cursor:pointer}",
+    ".opa-scroll-note:hover{color:#cc69c7;opacity:1}",
+    ".opa-scroll-note[hidden]{display:none}",
     "@media (max-width:720px){.opa-card{position:static;width:auto;max-width:none;opacity:1;transform:none;",
       "pointer-events:auto;border:0;border-top:1px solid rgba(5,33,78,.14);border-radius:0;backdrop-filter:none}",
       ".opa-card:not(.opa-on){display:none}.opa-card.opa-right{top:auto}",
+      /* Below the picture the card is part of the page, so let the list run
+         its full length and be scrolled by the page. A scrolling box inside
+         a scrolling page is a trap on a phone. */
+      ".opa-card ul{max-height:none;overflow:visible;padding-right:0}",
       ".opa-legend{display:none}",
       /* The hint used to be hidden here too, which left a phone reader with no
          way of knowing the picture answers to a finger at all. */
@@ -491,7 +513,9 @@
   function loop(){
     if (ready){
       var spin = state.view === "globe" && state.spin && !RM && state.sel === null && !drag.on;
-      if (spin) state.rot += 0.075;
+      /* Same sign error as the drag: the idle spin was turning the world
+         backwards. The Earth carries a place eastward, so it drifts right. */
+      if (spin) state.rot -= 0.075;
       if (spin || dirty) draw();
     }
     requestAnimationFrame(loop);
@@ -504,23 +528,47 @@
       var nm = p.u ? '<a class="opa-who" href="' + p.u + '">' + esc(p.n) + '</a>' : esc(p.n);
       return "<li>" + nm + (p.l ? "<i>" + esc(p.l) + "</i>" : "") + "</li>";
     }).join("");
-    var more = people.length>80 ? '<li style="color:rgba(5,33,78,.6)">+ ' + (people.length-80) + " more</li>" : "";
+    var more = people.length>80 ? '<li style="opacity:.62">+ ' + (people.length-80) + " more</li>" : "";
     return '<button type="button" class="opa-x" aria-label="Close">&times;</button>' +
-           "<h3>" + esc(title) + '</h3><div class="opa-meta">' + esc(meta) + "</div><ul>" + li + more + "</ul>";
+           "<h3>" + esc(title) + '</h3><div class="opa-meta">' + esc(meta) + "</div><ul>" + li + more + "</ul>" +
+           '<button type="button" class="opa-scroll-note" hidden></button>';
+  }
+  /* Shared by both card openers. The note exists because macOS keeps its
+     scrollbar hidden until you already scroll: a place with ten poets showed
+     a few names and nothing to say the rest were there. */
+  function mountCard(){
+    var x  = card.querySelector(".opa-x"),
+        ul = card.querySelector("ul"),
+        note = card.querySelector(".opa-scroll-note");
+    if (x) x.onclick = function(){ state.sel = null; state.pin = false;
+      card.classList.remove("opa-on","opa-pin"); mark(); };
+    if (!ul || !note) return;
+    function tally(){
+      var left = ul.scrollHeight - ul.clientHeight - ul.scrollTop;
+      if (left <= 2){ note.hidden = true; return; }
+      var n = 0, k, li;
+      for (k = 0; k < ul.children.length; k++){
+        li = ul.children[k];
+        if (li.offsetTop - ul.scrollTop + li.offsetHeight > ul.clientHeight + 1) n++;
+      }
+      note.hidden = n === 0;
+      note.textContent = n + " more below";
+    }
+    ul.onscroll = tally;
+    note.onclick = function(){ ul.scrollTop += ul.clientHeight * 0.82; };
+    tally();
   }
   function showRow(i, pin){
     var r = ROWS[i], h = null, k;
     for (k=0;k<hits.length;k++) if (hits[k].i === i) { h = hits[k]; break; }
     card.classList.toggle("opa-right", !!h && h.x > W*0.52);
+    /* The title already says "Ohio, United States" or "Nigeria", so spelling
+       out the precision underneath only repeated it back at the reader. */
     var bits = [ r.poets.length + (r.poets.length===1 ? " poet" : " poets"), r.continent ];
-    if (r.precision === "country") bits.push("country-level");
-    else if (r.precision === "region") bits.push("state-level");
     card.innerHTML = cardHTML(r.city ? r.city + ", " + r.country : r.country, bits.join(" · "), r.poets);
     card.classList.add("opa-on");
     card.classList.toggle("opa-pin", !!pin);
-    var x = card.querySelector(".opa-x");
-    if (x) x.onclick = function(){ state.sel = null; state.pin = false;
-      card.classList.remove("opa-on","opa-pin"); mark(); };
+    mountCard();
   }
   function showGroup(title, rowsIn){
     var people = [], where = [];
@@ -534,9 +582,7 @@
     card.innerHTML = cardHTML(title, meta.join(" · "), people);
     card.classList.add("opa-on","opa-pin");
     state.pin = true;
-    var x = card.querySelector(".opa-x");
-    if (x) x.onclick = function(){ state.sel = null; state.pin = false;
-      card.classList.remove("opa-on","opa-pin"); mark(); };
+    mountCard();
   }
 
   /* ------------------------------------------------ zoom / pan / pick */
@@ -619,7 +665,10 @@
       var dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
       drag.x = ev.clientX; drag.y = ev.clientY; drag.moved += Math.abs(dx)+Math.abs(dy);
       if (state.view === "globe"){
-        state.rot += dx*0.32;
+        /* state.rot is the longitude sitting at the centre of the disc, so
+           pulling the globe to the right has to walk that longitude west.
+           Adding dx did the opposite and the globe fought your hand. */
+        state.rot -= dx*0.32;
         state.tilt = Math.max(-75, Math.min(75, state.tilt + dy*0.28));
       } else { state.px += dx; state.py += dy; clampPan(); }
       mark();
@@ -714,6 +763,9 @@
       H = Math.round(Math.max(260, Math.min(H, vh*0.46)));
     }
     cv.width = W*DPR; cv.height = H*DPR; cv.style.height = H+"px";
+    /* Let the readout list use whatever height the picture leaves it, so a
+       place with ten poets shows most of them instead of three. */
+    root.style.setProperty("--opa-list", Math.max(180, H - 150) + "px");
     fitFlat(); mark();
   }
   var rt;
