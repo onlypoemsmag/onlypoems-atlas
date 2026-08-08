@@ -2,8 +2,8 @@
 
 Rebuilt automatically. Do not edit by hand — change the CMS instead.
 
-- contributors in the CMS: **267**
-- placed on the map: **256**
+- contributors in the CMS: **268**
+- placed on the map: **257**
 - no location on file: **11**
 - had a location we could not place: **0**
 
