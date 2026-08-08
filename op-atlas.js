@@ -31,10 +31,14 @@
     ".opa-bar button{appearance:none;background:#fde7ff;border:1px solid transparent;color:#4c274a;",
       "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.11em;",
       "text-transform:uppercase;padding:9px 15px;cursor:pointer;transition:.18s;border-radius:11px}",
-    ".opa-bar button:hover{background:#ffa8fa}",
-    /* Navy, not near-white. Eleven-pixel uppercase on this pink came to
-       3.2:1; navy on the same pink is 4.8:1 and the pill is unchanged. */
-    ".opa-bar button[aria-pressed=true]{background:#cc69c7;color:#05214e}",
+    /* One family, two values. Every button on the picture rests on the pale
+       pink with plum type; hovering draws a plum hairline — the chosen colour
+       arriving early rather than a new colour arriving at all — and the chosen
+       one inverts. That retires #ffa8fa, and drops #cc69c7 back to what it is
+       good at: the dots. Both states read at 10.64:1 where the old chosen
+       fill managed 4.8:1. */
+    ".opa-bar button:hover{border-color:#4c274a}",
+    ".opa-bar button[aria-pressed=true]{background:#4c274a;color:#fde7ff;border-color:#4c274a}",
     ".opa-stage{position:relative;border:1px solid rgba(5,33,78,.14);border-radius:11px;overflow:hidden;background:#fefcff}",
     /* touch-action:none, not pan-y. pan-y hands every touch to the browser —
        including the second finger — so on a phone the pinch never arrived and
@@ -44,10 +48,10 @@
     ".opa-cv{display:block;width:100%;height:auto;cursor:grab;touch-action:none}",
     ".opa-cv.opa-grab{cursor:grabbing}",
     ".opa-zoom{position:absolute;right:12px;top:12px;display:flex;gap:4px}",
-    ".opa-zoom button{appearance:none;width:30px;height:30px;border:1px solid #fde7ff;background:#fde7ff;",
+    ".opa-zoom button{appearance:none;width:30px;height:30px;border:1px solid transparent;background:#fde7ff;",
       "color:#4c274a;border-radius:11px;cursor:pointer;font-family:brother-1816,'Brother 1816',sans-serif;",
       "font-size:14px;line-height:1;transition:.16s;padding:0}",
-    ".opa-zoom button:hover{background:#ffa8fa;border-color:#ffa8fa}",
+    ".opa-zoom button:hover{border-color:#4c274a}",
     ".opa-zoom button.opa-wide{width:auto;padding:0 11px;font-size:11px;letter-spacing:.1em;text-transform:uppercase}",
     /* A thumb is not a cursor. These are the guaranteed way to zoom, so on a
        touch screen they get a target somebody can actually hit. */
@@ -139,14 +143,14 @@
       "border-radius:11px;cursor:pointer;transition:.16s;font:inherit;color:inherit}",
     ".opa-ct:hover{background:#fde7ff}",
     ".opa-ct:focus-visible{outline:2px solid #cc69c7;outline-offset:2px}",
-    /* Navy on the pink, not near-white: at eleven pixels the light fill came
-       to 3.2:1, under the 4.5 a small size wants. This is 4.8:1, and the
-       label takes it by inheritance rather than being dimmed on top. */
-    ".opa-ct[aria-expanded=true]{background:#cc69c7;color:#05214e}",
+    /* Open, a figure inverts the same way a chosen tab does — plum fill,
+       pale type, 10.64:1. The label takes it by inheritance rather than
+       being dimmed on top. */
+    ".opa-ct[aria-expanded=true]{background:#4c274a;color:#fde7ff}",
     /* The label carries its own colour on the page, so it does not inherit
        the line above — and it used to be dimmed to 80% on top of that, which
-       dropped it to 3.1:1. Stated, at full strength: 4.8:1. */
-    ".opa-ct[aria-expanded=true] .op-atlas-lab{color:#05214e;opacity:1}",
+       dropped it to 3.1:1. Stated, at full strength: 10.64:1. */
+    ".opa-ct[aria-expanded=true] .op-atlas-lab{color:#fde7ff;opacity:1}",
     /* The caret is the only thing saying a figure opens. Inside the label's
        line it pushed the word off the centre of the number above it, so it
        sits under the word on a line of its own, where it costs no width and
