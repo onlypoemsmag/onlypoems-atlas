@@ -157,8 +157,6 @@
     ".opa-pgroup h5{font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;",
       "letter-spacing:.14em;text-transform:uppercase;color:rgba(5,33,78,.68);margin:0 0 8px;font-weight:400}",
     ".opa-pgroup h5 span{opacity:.55;margin-left:4px}",
-    ".opa-phint{font-family:brother-1816,'Brother 1816',sans-serif;font-size:11.5px;letter-spacing:.02em;",
-      "color:rgba(5,33,78,.62);margin:0 0 16px}",
     ".opa-seemore{appearance:none;border:0;background:none;padding:5px 0 0;cursor:pointer;display:block;",
       "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
       "text-transform:uppercase;color:#b03fa9;text-align:left}",
@@ -782,7 +780,6 @@
      HTML — it just stops taking up the screen. */
   var SHORT = { "United States":"USA", "United Kingdom":"UK", "United Arab Emirates":"UAE" };
   function brief(c){ return SHORT[c] || c; }
-  function hintLine(s){ return '<p class="opa-phint">' + esc(s) + "</p>"; }
   function tally(key){
     var t = {}, order = [];
     ROWS.forEach(function(r){
@@ -807,16 +804,14 @@
     },
     countries: function(){
       var q = tally("country");
-      return hintLine("Click a country to open it on the map") +
-        '<div class="opa-cols">' + q.order.map(function(c){
+      return '<div class="opa-cols">' + q.order.map(function(c){
           return '<button type="button" class="opa-pitem" data-country="' + esc(c) + '">' +
                  esc(c) + "<u>" + q.t[c] + "</u></button>";
         }).join("") + "</div>";
     },
     continents: function(){
       var q = tally("continent");
-      return hintLine("Click a continent to open it on the map") +
-        '<div class="opa-cols">' + q.order.map(function(c){
+      return '<div class="opa-cols">' + q.order.map(function(c){
           return '<button type="button" class="opa-pitem" data-continent="' + esc(c) + '">' +
                  esc(c) + "<u>" + q.t[c] + "</u></button>";
         }).join("") + "</div>";
