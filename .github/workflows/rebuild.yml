@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write
     steps:
       - uses: actions/checkout@v4
 
@@ -52,9 +53,79 @@ jobs:
             git push
           fi
 
-      # Fails last, so the report is committed either way. A failure means
-      # somebody has a location on file that geo.py has no coordinates
-      # for — see unplaced.md.
+      # A red run in the Actions tab is easy to never look at, and this
+      # particular failure means a real person has quietly dropped off the
+      # map. So say it somewhere that reaches a person: an issue, which
+      # GitHub emails to whoever watches this repo. One issue, reused — a
+      # second failure adds a comment rather than starting a new thread.
+      - name: Say so somewhere a person will see it
+        if: steps.build.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const read = (p, n) => {
+              try { return fs.readFileSync(p, "utf8").slice(-n); } catch (e) { return ""; }
+            };
+
+            const TITLE = "The atlas rebuild could not place everyone";
+            const log = read("/tmp/build.log", 3000);
+
+            // Just the names, not the whole report.
+            let names = "";
+            const unplaced = read("unplaced.md", 20000);
+            const mark = "could not place it";
+            const cut = unplaced.indexOf(mark);
+            if (cut > -1) names = unplaced.slice(cut + mark.length).trim();
+
+            const base = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}`;
+            const body = [
+              "Somebody has a location on file that `geo.py` has no coordinates for, so they are",
+              "sitting on a coarse pin or are off the map entirely.",
+              "",
+              "**The fix:** add the coordinate to the right table in `geo.py` — `CITY_US`,",
+              "`CITY_CA`, `CITY_WORLD`, `REGION` or `COUNTRY` — commit it to `main`, then press",
+              "Run workflow. `geo.py` never reaches a browser, so there is no tag to cut and no",
+              "Webflow change to make.",
+              "",
+              "Watch for one thing: a two-part value like `Mississippi, United States` is read as",
+              "a **city** unless that state is in `REGION`. A missing state anchor becomes a",
+              "country-centroid pin without complaining.",
+              "",
+              "### Who could not be placed",
+              "",
+              names || "_see `unplaced.md`_",
+              "",
+              "### Build output",
+              "",
+              "```",
+              log || "the build produced no output",
+              "```",
+              "",
+              `[Full run](${base}/actions/runs/${context.runId}) · [unplaced.md](${base}/blob/main/unplaced.md)`,
+            ].join("\n");
+
+            const { owner, repo } = context.repo;
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: "open", per_page: 100,
+            });
+            const existing = open.data.find(i => i.title === TITLE && !i.pull_request);
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: existing.number, body,
+              });
+              core.info(`Commented on issue #${existing.number}`);
+            } else {
+              const made = await github.rest.issues.create({
+                owner, repo, title: TITLE, body, labels: ["atlas"],
+              });
+              core.info(`Opened issue #${made.data.number}`);
+            }
+
+      # Fails last, so the report is committed and the issue filed either way.
+      # A failure means somebody has a location on file that geo.py has no
+      # coordinates for — see unplaced.md.
       - name: Surface a build failure
         if: steps.build.outcome == 'failure'
         run: |
