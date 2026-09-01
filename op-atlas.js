@@ -70,20 +70,6 @@
       ".opa-zoom .opa-in{position:absolute;top:10px;right:10px}",
       ".opa-zoom .opa-reset{position:absolute;bottom:10px;right:10px}}",
     "@media (max-width:720px) and (pointer:fine){.opa-zoom .opa-out{right:46px}}",
-    ".opa-legend{position:absolute;right:14px;bottom:12px;display:flex;gap:16px;align-items:center;",
-      "font-family:brother-1816,'Brother 1816',sans-serif;font-size:11px;letter-spacing:.1em;",
-      "color:rgba(5,33,78,.68);pointer-events:none;transition:opacity .2s}",
-    ".opa-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#cc69c7;margin-right:6px;vertical-align:middle}",
-    ".opa-legend i.opa-ring{background:transparent;border:1px solid #cc69c7}",
-    ".opa-hint{position:absolute;left:14px;bottom:12px;font-family:brother-1816,'Brother 1816',sans-serif;",
-      "font-size:11px;letter-spacing:.02em;color:rgba(5,33,78,.62);pointer-events:none;transition:opacity .2s}",
-    /* Now the card can stand the full height of the picture, it reaches the
-       hint and the legend. Both have done their teaching by the time somebody
-       has a place open, so they step aside. Not on a phone: down there the
-       card sits below the picture and the hint is the only thing saying the
-       picture answers to a finger. */
-    "@media (min-width:721px){.opa-card.opa-on ~ .opa-hint,",
-      ".opa-card.opa-on ~ .opa-legend{opacity:0}}",
     ".opa-card{position:absolute;left:14px;top:14px;width:330px;max-width:calc(100% - 28px);",
       "background:rgba(254,252,255,.94);backdrop-filter:blur(8px);border:1px solid rgba(5,33,78,.14);",
       "border-radius:11px;padding:15px 17px 17px;opacity:0;transform:translateY(-4px);",
@@ -127,11 +113,7 @@
       /* Below the picture the card is part of the page, so let the list run
          its full length and be scrolled by the page. A scrolling box inside
          a scrolling page is a trap on a phone. */
-      ".opa-card ul{max-height:none;overflow:visible;padding-right:0}",
-      ".opa-legend{display:none}",
-      /* The hint used to be hidden here too, which left a phone reader with no
-         way of knowing the picture answers to a finger at all. */
-      ".opa-hint{position:static;display:block;padding:9px 2px 0;text-align:center}}",
+      ".opa-card ul{max-height:none;overflow:visible;padding-right:0}}",
 
     /* --- the four counters double as the index, as in the original --- */
     "#" + ROOT_ID + "{scroll-margin-top:150px}",
@@ -211,15 +193,12 @@
         '<button type="button" class="opa-reset opa-wide" title="Reset the view">Reset</button>' +
       '</div>' +
       '<div class="opa-card"></div>' +
-      '<div class="opa-legend"><span>Bigger dot, more poets</span></div>' +
-      '<div class="opa-hint">Pinch to zoom, drag to turn</div>' +
     '</div>';
 
   var bar    = root.querySelector(".opa-bar"),
       stage  = root.querySelector(".opa-stage"),
       cv     = root.querySelector(".opa-cv"),
       card   = root.querySelector(".opa-card"),
-      hint   = root.querySelector(".opa-hint"),
       ctx    = cv.getContext("2d");
 
   var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -768,8 +747,6 @@
     Array.prototype.forEach.call(bar.children, function(x){
       x.setAttribute("aria-pressed", x === b ? "true" : "false");
     });
-    hint.textContent = state.view === "globe"
-      ? "Pinch to zoom, drag to turn" : "Pinch to zoom, drag to move";
     resetView(); resize();
   });
 
@@ -824,9 +801,7 @@
         r.poets.forEach(function(p){ all.push({ n:p.n, u:p.u, w:w }); });
       });
       all.sort(function(a,b){ return a.n.localeCompare(b.n); });
-      var missing = Math.max(0, published - all.length);
-      return hintLine(all.length + " placed" + (missing ? " · " + missing + " still without a location" : "")) +
-        '<div class="opa-cols">' + all.map(function(p){
+      return '<div class="opa-cols">' + all.map(function(p){
           return '<a class="opa-pitem" href="' + p.u + '">' + esc(p.n) + "<u>" + esc(p.w) + "</u></a>";
         }).join("") + "</div>";
     },
@@ -871,12 +846,11 @@
               list.length + " &rarr;</button>"
             : "") + "</div>";
       }).join("");
-      return hintLine("Cities and towns only — state and country pins are in the country list") +
-        '<div class="opa-cols">' + html + "</div>";
+      return '<div class="opa-cols">' + html + "</div>";
     }
   };
 
-  var published = 0, panel = null;
+  var panel = null;
   function keyFor(label){
     var s = (label || "").toLowerCase();
     if (s.indexOf("countr")   >= 0) return "countries";
@@ -902,10 +876,6 @@
       var lab = el.querySelector(".op-atlas-lab");
       var key = keyFor(lab ? lab.textContent : el.textContent);
       if (!key || !PANELS[key]) return;
-      if (key === "people"){
-        var num = el.querySelector(".op-atlas-num");
-        published = parseInt((num ? num.textContent : "").replace(/[^0-9]/g,""), 10) || 0;
-      }
       el.className += " opa-ct";
       el.setAttribute("role", "button");
       el.setAttribute("tabindex", "0");
@@ -1014,7 +984,6 @@
       var key = keyFor(lab ? lab.textContent : el.textContent);
       if (key && want[key] != null) setNum(el.querySelector(".op-atlas-num"), want[key]);
     });
-    published = want.people || placed;
   }
 
   function refreshIndex(){
