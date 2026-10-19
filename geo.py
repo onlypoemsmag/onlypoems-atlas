@@ -46,7 +46,7 @@ CITY_US = {
     ("Honolulu", "Hawaii"): (21.31, -157.86),
     ("Maui", "Hawaii"): (20.80, -156.33),
     ("Rexburg", "Idaho"): (43.83, -111.79),
-    ("Chicago", "Illinois"): (41.88, -87.63),
+    ("Chicago", "Illinois"): (41.88, -87.63), ("Mount Prospect", "Illinois"): (42.06, -87.94),
     ("Elgin", "Illinois"): (42.04, -88.28),
     ("Glen Ellyn", "Illinois"): (41.88, -88.07),
     ("Indianapolis", "Indiana"): (39.77, -86.16),
@@ -56,7 +56,7 @@ CITY_US = {
     ("New Orleans", "Louisiana"): (29.95, -90.07),
     ("Bangor", "Maine"): (44.80, -68.77),
     ("Farmington", "Maine"): (44.67, -70.15),
-    ("Annapolis", "Maryland"): (38.98, -76.49),
+    ("Annapolis", "Maryland"): (38.98, -76.49), ("Baltimore", "Maryland"): (39.29, -76.61),
     ("College Park", "Maryland"): (38.99, -76.94),
     ("Boston", "Massachusetts"): (42.36, -71.06),
     ("Cambridge", "Massachusetts"): (42.37, -71.11),
@@ -137,7 +137,7 @@ CITY_CA = {
     ("Kitchener", "Ontario"): (43.45, -80.49),
     ("Toronto", "Ontario"): (43.65, -79.38),
     ("Windsor", "Ontario"): (42.32, -83.04),
-    ("Montreal", "Quebec"): (45.50, -73.57),
+    ("Montreal", "Quebec"): (45.50, -73.57), ("Windsor", "Nova Scotia"): (44.99, -64.13),
 }
 
 # ---------------------------------------------------------------- elsewhere
@@ -168,7 +168,7 @@ CITY_WORLD = {
     ("Dar es Salaam", "Tanzania"): (-6.79, 39.21),
     ("Kyiv", "Ukraine"): (50.45, 30.52),
     ("Odesa", "Ukraine"): (46.48, 30.72),
-    ("London", "United Kingdom"): (51.51, -0.13),
+    ("London", "United Kingdom"): (51.51, -0.13), ("Taipei", "Taiwan"): (25.03, 121.57),
 }
 
 # ---------------------------------------------------------------- state / province
@@ -186,7 +186,7 @@ REGION = {
     ("Illinois", "United States"): (40.00, -89.20),
     ("Indiana", "United States"): (39.90, -86.30),
     ("Iowa", "United States"): (42.00, -93.50),
-    ("Kentucky", "United States"): (37.50, -85.30),
+    ("Kentucky", "United States"): (37.50, -85.30), ("Louisiana", "United States"): (31.00, -92.00),
     ("Maine", "United States"): (45.40, -69.20),
     ("Maryland", "United States"): (39.00, -76.80),
     ("Massachusetts", "United States"): (42.25, -71.80),
@@ -212,7 +212,7 @@ REGION = {
     ("Wisconsin", "United States"): (44.50, -89.50),
     ("British Columbia", "Canada"): (54.00, -125.00),
     ("New Brunswick", "Canada"): (46.50, -66.10),
-    ("Ontario", "Canada"): (50.00, -86.00),
+    ("Ontario", "Canada"): (50.00, -86.00), ("Nova Scotia", "Canada"): (45.00, -63.00),
     ("Quebec", "Canada"): (52.00, -72.00),
 }
 
@@ -229,7 +229,7 @@ COUNTRY = {
     "Ghana": (7.95, -1.03), "Greece": (39.10, 21.80),
     "Hong Kong": (22.32, 114.17), "India": (22.00, 79.00),
     "Hungary": (47.16, 19.50), "Switzerland": (46.80, 8.23),
-    "Indonesia": (-2.50, 118.00), "Iran": (32.40, 53.70),
+    "Indonesia": (-2.50, 118.00), "Iran": (32.40, 53.70), "Saudi Arabia": (23.89, 45.08), "Sudan": (12.86, 30.22),
     "Iraq": (33.20, 43.70), "Ireland": (53.40, -8.00),
     "Israel": (31.50, 34.90), "Italy": (42.80, 12.60),
     "Jamaica": (18.11, -77.30), "Japan": (36.20, 138.30),
@@ -268,11 +268,11 @@ CONTINENT = {
     "Taiwan": "Asia", "Japan": "Asia", "South Korea": "Asia",
     "Sri Lanka": "Asia", "Bangladesh": "Asia", "Nepal": "Asia",
     "Malaysia": "Asia", "Vietnam": "Asia", "Turkey": "Asia",
-    "Iran": "Asia", "Iraq": "Asia", "Israel": "Asia",
+    "Iran": "Asia", "Iraq": "Asia", "Israel": "Asia", "Saudi Arabia": "Asia",
     "Nigeria": "Africa", "Tanzania": "Africa", "Tunisia": "Africa",
     "Egypt": "Africa", "Ghana": "Africa", "Kenya": "Africa",
     "South Africa": "Africa", "Ethiopia": "Africa", "Uganda": "Africa",
-    "Zimbabwe": "Africa", "Morocco": "Africa",
+    "Zimbabwe": "Africa", "Morocco": "Africa", "Sudan": "Africa",
     "Venezuela": "South America", "Brazil": "South America",
     "Argentina": "South America", "Chile": "South America",
     "Colombia": "South America", "Peru": "South America",
