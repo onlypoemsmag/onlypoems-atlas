@@ -2,10 +2,10 @@
 
 Rebuilt automatically. Do not edit by hand — change the CMS instead.
 
-- contributors in the CMS: **314**
-- placed on the map: **302**
+- contributors in the CMS: **318**
+- placed on the map: **305**
 - no location on file: **12**
-- had a location we could not place: **0**
+- had a location we could not place: **2**
 
 ## No location on file
 
@@ -30,4 +30,5 @@ Fill in `from` or `lives` on their CMS record and they appear next run.
 These need a coordinate adding to `geo.py`. Until then the person
 sits at a coarser pin or is missing entirely, so the build fails on purpose.
 
-_nobody_
+- Jacq Roderick — `Marshfield, Massachusetts, United States  (fell back to a coarser pin)`
+- Joseph Fasano — `New York`
