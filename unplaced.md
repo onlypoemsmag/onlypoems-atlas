@@ -2,10 +2,10 @@
 
 Rebuilt automatically. Do not edit by hand — change the CMS instead.
 
-- contributors in the CMS: **318**
-- placed on the map: **305**
-- no location on file: **12**
-- had a location we could not place: **2**
+- contributors in the CMS: **325**
+- placed on the map: **311**
+- no location on file: **11**
+- had a location we could not place: **5**
 
 ## No location on file
 
@@ -16,7 +16,6 @@ Fill in `from` or `lives` on their CMS record and they appear next run.
 - Chris Watkins
 - Christine C. Rivero-Guisinga
 - Ed Hamilton
-- Frank X. Gaspar
 - Katie Kemple
 - Leigh Chadwick
 - Nick Bozanic
@@ -30,5 +29,8 @@ Fill in `from` or `lives` on their CMS record and they appear next run.
 These need a coordinate adding to `geo.py`. Until then the person
 sits at a coarser pin or is missing entirely, so the build fails on purpose.
 
-- Jacq Roderick — `Marshfield, Massachusetts, United States  (fell back to a coarser pin)`
-- Joseph Fasano — `New York`
+- Kent Stephens — `Kittery Point, Maine, United States  (fell back to a coarser pin)`
+- Mark Abley — `Ontario`
+- Natalia Lomaia — `Georgia`
+- Oksana Maksymchuk — `Lviv, Ukraine  (fell back to a coarser pin)`
+- Pico Iyer — `England`
