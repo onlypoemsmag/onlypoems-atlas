@@ -3,9 +3,9 @@
 Rebuilt automatically. Do not edit by hand — change the CMS instead.
 
 - contributors in the CMS: **325**
-- placed on the map: **311**
+- placed on the map: **314**
 - no location on file: **11**
-- had a location we could not place: **5**
+- had a location we could not place: **0**
 
 ## No location on file
 
@@ -29,8 +29,4 @@ Fill in `from` or `lives` on their CMS record and they appear next run.
 These need a coordinate adding to `geo.py`. Until then the person
 sits at a coarser pin or is missing entirely, so the build fails on purpose.
 
-- Kent Stephens — `Kittery Point, Maine, United States  (fell back to a coarser pin)`
-- Mark Abley — `Ontario`
-- Natalia Lomaia — `Georgia`
-- Oksana Maksymchuk — `Lviv, Ukraine  (fell back to a coarser pin)`
-- Pico Iyer — `England`
+_nobody_
